@@ -7,6 +7,7 @@
     </settings>
     <typeHandlers>
         <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.donglu.bean.EventTypeEnum"/>
+        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.donglu.bean.AccessControlState"/>
     </typeHandlers>
     <plugins>
         <!-- com.github.pagehelper为PageHelper类所在包名 -->

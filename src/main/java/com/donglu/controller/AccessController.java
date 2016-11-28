@@ -1,5 +1,6 @@
 package com.donglu.controller;
 
+import com.donglu.bean.AccessControlRecord;
 import com.donglu.bean.CardUsage;
 import com.donglu.bean.Response;
 import com.donglu.bean.ResponseTableList;
@@ -28,6 +29,15 @@ public class AccessController {
         PageHelper.orderBy("id");
         List<CardUsage> cardUsageList = accessControlMapper.findCardUsage();
         Long count = accessControlMapper.countCardUsage();
+        return new ResponseTableList(count, cardUsageList);
+    }
+
+    @RequestMapping(value = "/accessControlRecord")
+    public Response getAccessControlRecordList(@RequestParam Integer start, @RequestParam Integer length) {
+        PageHelper.offsetPage(start,length);
+        PageHelper.orderBy("acr.id");
+        List<AccessControlRecord> cardUsageList = accessControlMapper.findAccessControlRecord();
+        Long count = accessControlMapper.countAccessControlRecord();
         return new ResponseTableList(count, cardUsageList);
     }
 

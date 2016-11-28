@@ -1,23 +1,62 @@
 <div class="row">
+    <div class="col-xs-11">
+        <form  class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-1 control-label" for="deviceName">设备名称</label>
+                <div class="col-sm-2">
+                    <input class="form-control" id="deviceName" type="text"/>
+                </div>
+                <label class="col-sm-1 control-label" for="cardIdentifier">卡片内码</label>
+                <div class="col-sm-2">
+                    <input class="form-control" id="cardIdentifier" type="text"/>
+                </div>
+                <label class="col-sm-1 control-label" for="userName">用户姓名</label>
+                <div class="col-sm-2">
+                    <input class="form-control" id="userName" type="text"/>
+                </div>
+                <label class="col-sm-1 control-label" for="accessControlState">状态</label>
+                <div class="col-sm-2">
+                    <select class="form-control" id="accessControlState">
+                        <option value="全部">全部</option>
+                        <option value="待下载">待下载</option>
+                        <option value="己下载">己下载</option>
+                        <option value="待删除">待删除</option>
+                        <option value="删除失败">删除失败</option>
+                        <option value="下载失败">下载失败</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-xs-1">
+        <button type="button" class="btn btn-default">查询</button>
+    </div>
+</div>
+<div style="margin-bottom: 10px"></div>
+<div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header">
-                <h3 class="box-title">设备刷卡记录</h3>
-            </div>
-            <!-- /.box-header -->
             <div class="box-body">
                 <table id="example2" class="table table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th>用户编号</th>
-                        <th>用户姓名</th>
+                        <th>流水号</th>
+                        <!--<th>设备编号</th>-->
+                        <th>设备</th>
                         <th>卡片内码</th>
                         <th>卡片编号</th>
-                        <th>设备编号</th>
-                        <th>设备名称</th>
-                        <th>保存时间</th>
-                        <th>设备时间</th>
-                        <th>刷卡类型</th>
+                        <th>用户编号</th>
+                        <th>用户名称</th>
+                        <th>状态</th>
+                        <th>是否有效</th>
+                        <!--<th>启用有效期</th>-->
+                        <!--<th>启用周表</th>-->
+                        <!--<th>周表编号</th>-->
+                        <!--<th>开反锁</th>-->
+                        <!--<th>起始有效期</th>-->
+                        <th>截止有效期</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
                     </tr>
                     </thead>
                 </table>
@@ -28,12 +67,19 @@
 </div>
 <script>
     $(function () {
+        initTable();
+        $("#submit").bind("click", function () { //按钮 触发table重新请求服务器
+            initTable();
+        });
+    });
+
+    function initTable() {
         $("#example2").DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
-            "autoWidth": true,
+            "autoWidth": false,
             "language": {
                 "sLengthMenu": "每页显示 _MENU_ 条记录",
                 "sZeroRecords": "抱歉， 没有找到",
@@ -48,18 +94,42 @@
                 }
             },
             columns:[
+                {data:"id"},
+//                {data:"deviceIdentifier"},
+                {data:"deviceName"},
+                {data:"cardIdentifier"},
+                {data:"cardSerialNumber"},
                 {data:"userIdentifier"},
                 {data:"userName"},
-                {data:"cardid"},
-                {data:"cardSerialNumber"},
-                {data:"deviceIdentifier"},
-                {data:"deviceName"},
-                {data:"eventTime"},
-                {data:"timestamp"},
-                {data:"eventType"}
+                {data:"accessControlState"},
+                {data:"checkCardEnabled"},
+//                {data:"checkValidPeriod"},
+//                {data:"enableWeekTable"},
+//                {data:"weektable"},
+//                {data:"enableOpenFromInside"},
+//                {data:"validFrom"},
+                {data:"validTo"},
+                {data:"createTime"},
+                {data:"uploadTime"}
             ],
+//            "fnServerParams": function (aoData) {  //查询条件
+//                aoData.push(
+//                    { "name": "deviceName", "value": $("#deviceName").val() },
+//                    { "name": "cardIdentifier", "value": $("#cardIdentifier").val() },
+//                    { "name": "userName", "value": $("#userName").val() },
+//                    { "name": "accessControlState", "value": $("#accessControlState").val() }
+//                );
+//            },
             "serverSide": true,
-            "ajax": "accessControl/cardUsage"
+            "ajax":{
+                url:"accessControl/accessControlRecord",
+                data:function(data){
+                    data["deviceName"] = $("#deviceName").val();
+                    data["cardIdentifier"] = $("#cardIdentifier").val();
+                    data["userName"] = $("#userName").val();
+                    data["accessControlState"] = $("#accessControlState").val();
+                }
+            }
         });
-    });
+    }
 </script>
