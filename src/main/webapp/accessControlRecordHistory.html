@@ -1,22 +1,22 @@
 <div class="row">
     <div class="col-xs-11">
-        <form  class="form-horizontal" role="form">
+        <form id="form" class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="col-sm-1 control-label" for="deviceName">设备名称</label>
                 <div class="col-sm-2">
-                    <input class="form-control" id="deviceName" type="text"/>
+                    <input class="form-control" id="deviceName" name="deviceName" type="text"/>
                 </div>
                 <label class="col-sm-1 control-label" for="cardIdentifier">卡片内码</label>
                 <div class="col-sm-2">
-                    <input class="form-control" id="cardIdentifier" type="text"/>
+                    <input class="form-control" id="cardIdentifier" name="cardIdentifier" type="text"/>
                 </div>
                 <label class="col-sm-1 control-label" for="userName">用户姓名</label>
                 <div class="col-sm-2">
-                    <input class="form-control" id="userName" type="text"/>
+                    <input class="form-control" id="userName" name="userName" type="text"/>
                 </div>
                 <label class="col-sm-1 control-label" for="accessControlState">状态</label>
                 <div class="col-sm-2">
-                    <select class="form-control" id="accessControlState">
+                    <select class="form-control" id="accessControlState" name="accessControlState">
                         <option value="全部">全部</option>
                         <option value="待下载">待下载</option>
                         <option value="己下载">己下载</option>
@@ -29,19 +29,18 @@
         </form>
     </div>
     <div class="col-xs-1">
-        <button type="button" class="btn btn-default">查询</button>
+        <button id="submit" onclick="javascript:dataTable.ajax.reload()" type="button" class="btn btn-info">查询</button>
     </div>
 </div>
 <div style="margin-bottom: 10px"></div>
 <div class="row">
     <div class="col-xs-12">
-        <div class="box">
+        <div class="box box-info">
             <div class="box-body">
                 <table id="example2" class="table table-bordered table-hover">
                     <thead>
                     <tr>
                         <th>流水号</th>
-                        <!--<th>设备编号</th>-->
                         <th>设备</th>
                         <th>卡片内码</th>
                         <th>卡片编号</th>
@@ -49,11 +48,6 @@
                         <th>用户名称</th>
                         <th>状态</th>
                         <th>是否有效</th>
-                        <!--<th>启用有效期</th>-->
-                        <!--<th>启用周表</th>-->
-                        <!--<th>周表编号</th>-->
-                        <!--<th>开反锁</th>-->
-                        <!--<th>起始有效期</th>-->
                         <th>截止有效期</th>
                         <th>创建时间</th>
                         <th>更新时间</th>
@@ -66,70 +60,28 @@
     </div>
 </div>
 <script>
-    $(function () {
-        initTable();
-        $("#submit").bind("click", function () { //按钮 触发table重新请求服务器
-            initTable();
-        });
+    var dataTable = $("#example2").DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "sAjaxSource": "accessControl/accessControlRecord",
+        "fnServerData":retrieveData,
+        "autoWidth": false,
+        "language": datatable_language_cn,
+        columns:[
+            {"data":"acrId","defaultContent": ""},
+            {"data":"deviceName","defaultContent": ""},
+            {"data":"cardIdentifier","defaultContent": ""},
+            {"data":"cardSerialNumber","defaultContent": ""},
+            {"data":"userIdentifier","defaultContent": ""},
+            {"data":"userName","defaultContent": ""},
+            {"data":"accessControlState","defaultContent": ""},
+            {"data":"checkCardEnabled","defaultContent": ""},
+            {"data":"validTo","defaultContent": ""},
+            {"data":"createTime","defaultContent": ""},
+            {"data":"uploadTime","defaultContent": ""}
+        ],
+        "serverSide": true
     });
-
-    function initTable() {
-        $("#example2").DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "autoWidth": false,
-            "language": {
-                "sLengthMenu": "每页显示 _MENU_ 条记录",
-                "sZeroRecords": "抱歉， 没有找到",
-                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
-                "sInfoEmpty": "没有数据",
-                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
-                "oPaginate": {
-                    "sFirst": "首页",
-                    "sPrevious": "前一页",
-                    "sNext": "后一页",
-                    "sLast": "尾页"
-                }
-            },
-            columns:[
-                {data:"id"},
-//                {data:"deviceIdentifier"},
-                {data:"deviceName"},
-                {data:"cardIdentifier"},
-                {data:"cardSerialNumber"},
-                {data:"userIdentifier"},
-                {data:"userName"},
-                {data:"accessControlState"},
-                {data:"checkCardEnabled"},
-//                {data:"checkValidPeriod"},
-//                {data:"enableWeekTable"},
-//                {data:"weektable"},
-//                {data:"enableOpenFromInside"},
-//                {data:"validFrom"},
-                {data:"validTo"},
-                {data:"createTime"},
-                {data:"uploadTime"}
-            ],
-//            "fnServerParams": function (aoData) {  //查询条件
-//                aoData.push(
-//                    { "name": "deviceName", "value": $("#deviceName").val() },
-//                    { "name": "cardIdentifier", "value": $("#cardIdentifier").val() },
-//                    { "name": "userName", "value": $("#userName").val() },
-//                    { "name": "accessControlState", "value": $("#accessControlState").val() }
-//                );
-//            },
-            "serverSide": true,
-            "ajax":{
-                url:"accessControl/accessControlRecord",
-                data:function(data){
-                    data["deviceName"] = $("#deviceName").val();
-                    data["cardIdentifier"] = $("#cardIdentifier").val();
-                    data["userName"] = $("#userName").val();
-                    data["accessControlState"] = $("#accessControlState").val();
-                }
-            }
-        });
-    }
 </script>

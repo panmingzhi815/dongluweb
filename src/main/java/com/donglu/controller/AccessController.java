@@ -1,17 +1,19 @@
 package com.donglu.controller;
 
-import com.donglu.bean.AccessControlRecord;
-import com.donglu.bean.CardUsage;
-import com.donglu.bean.Response;
-import com.donglu.bean.ResponseTableList;
+import com.donglu.bean.*;
 import com.donglu.mapper.AccessControlMapper;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by panmingzhi on 2016/11/27 0027.
@@ -23,21 +25,36 @@ public class AccessController {
     @Autowired
     private AccessControlMapper accessControlMapper;
 
-    @RequestMapping(value = "/cardUsage")
-    public Response getCardUsageList(@RequestParam Integer start,@RequestParam Integer length){
-        PageHelper.offsetPage(start,length);
-        PageHelper.orderBy("id");
-        List<CardUsage> cardUsageList = accessControlMapper.findCardUsage();
-        Long count = accessControlMapper.countCardUsage();
+    @RequestMapping(value = "/cardUsage",method = RequestMethod.GET)
+    public Response findCardUsage(@RequestParam String tableParam,@RequestParam String searchParam){
+        DataTablePageUtil mapDataTablePageUtil = new DataTablePageUtil(tableParam,searchParam);
+        PageHelper.offsetPage(mapDataTablePageUtil.getStart(),mapDataTablePageUtil.getLength(),false);
+        PageHelper.orderBy(mapDataTablePageUtil.getsortStr());
+
+        List<CardUsage> cardUsageList = accessControlMapper.findCardUsage(mapDataTablePageUtil.getConditionMap());
+        Long count = accessControlMapper.countCardUsage(mapDataTablePageUtil.getConditionMap());
         return new ResponseTableList(count, cardUsageList);
     }
 
-    @RequestMapping(value = "/accessControlRecord")
-    public Response getAccessControlRecordList(@RequestParam Integer start, @RequestParam Integer length) {
-        PageHelper.offsetPage(start,length);
-        PageHelper.orderBy("acr.id");
-        List<AccessControlRecord> cardUsageList = accessControlMapper.findAccessControlRecord();
-        Long count = accessControlMapper.countAccessControlRecord();
+    @RequestMapping(value = "/accessControlRecord",method = RequestMethod.GET)
+    public Response findAccessControlRecord(@RequestParam String tableParam,@RequestParam String searchParam) {
+        DataTablePageUtil mapDataTablePageUtil = new DataTablePageUtil(tableParam,searchParam);
+        PageHelper.offsetPage(mapDataTablePageUtil.getStart(),mapDataTablePageUtil.getLength(),false);
+        PageHelper.orderBy(mapDataTablePageUtil.getsortStr());
+
+        List<AccessControlRecord> cardUsageList = accessControlMapper.findAccessControlRecord(mapDataTablePageUtil.getConditionMap());
+        Long count = accessControlMapper.countAccessControlRecord(mapDataTablePageUtil.getConditionMap());
+        return new ResponseTableList(count, cardUsageList);
+    }
+
+    @RequestMapping(value = "/cardUser",method = RequestMethod.GET)
+    public Response findCardUser(@RequestParam String tableParam,@RequestParam String searchParam){
+        DataTablePageUtil mapDataTablePageUtil = new DataTablePageUtil(tableParam,searchParam);
+        PageHelper.offsetPage(mapDataTablePageUtil.getStart(),mapDataTablePageUtil.getLength(),false);
+        PageHelper.orderBy(mapDataTablePageUtil.getsortStr());
+
+        List<CardUser> cardUsageList = accessControlMapper.findCardUser(mapDataTablePageUtil.getConditionMap());
+        Long count = accessControlMapper.countCardUser(mapDataTablePageUtil.getConditionMap());
         return new ResponseTableList(count, cardUsageList);
     }
 

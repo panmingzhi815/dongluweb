@@ -9,4 +9,5 @@ public interface LoginUserMapper {
 
     @Select("select * from SystemAccout lu where lu.accountName = #{accountName}")
     SystemAccount findOne(String accountName);
+
 }

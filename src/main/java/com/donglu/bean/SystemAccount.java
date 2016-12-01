@@ -10,4 +10,5 @@ public class SystemAccount {
     private Long id;
     private String accountName;
     private String accountPassword;
+    private String accountDescript;
 }

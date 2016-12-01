@@ -2,10 +2,14 @@ package com.donglu.mapper;
 
 import com.donglu.bean.AccessControlRecord;
 import com.donglu.bean.CardUsage;
+import com.donglu.bean.CardUser;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by panmingzhi on 2016/11/27 0027.
@@ -13,15 +17,21 @@ import java.util.List;
 @Mapper
 public interface AccessControlMapper {
 
-    @Select("select * from CardUsage")
-    List<CardUsage> findCardUsage();
+    @SelectProvider(type = AccessControlMapperProvider.class, method = "findCardUsage")
+    List<CardUsage> findCardUsage(Map<String, String> conditionMap);
 
-    @Select("select count(id) from CardUsage")
-    Long countCardUsage();
+    @SelectProvider(type = AccessControlMapperProvider.class, method = "countCardUsage")
+    Long countCardUsage(Map<String, String> conditionMap);
 
-    @Select("SELECT acr.id,acr.accessControlState,d.Identifier as deviceIdentifier,d.Name as deviceName,pc.PhysicalId as cardIdentifier,pc.SerialNumber as cardSerialNumber,cu.identifier as userIdentifier,cu.name as userName,acr.createTime,acr.checkCardEnabled,acr.checkValidPeriod,acr.enableOpenFromInside,acr.enableWeekTable,acr.validFrom,acr.validTo,acr.weektable,acr.uploadTime FROM AccessControlRecord acr LEFT JOIN PhysicalCard pc on acr.card_id = pc.id LEFT JOIN Device d on acr.device = d.id LEFT JOIN CardUser cu on pc.cardUser = cu.id")
-    List<AccessControlRecord> findAccessControlRecord();
+    @SelectProvider(type = AccessControlMapperProvider.class, method = "findAccessControlRecord")
+    List<AccessControlRecord> findAccessControlRecord(Map<String,String> map);
 
-    @Select("select count(id) from AccessControlRecord")
-    Long countAccessControlRecord();
+    @SelectProvider(type = AccessControlMapperProvider.class, method = "countAccessControlRecord")
+    Long countAccessControlRecord(Map<String,String> map);
+
+    @SelectProvider(type = AccessControlMapperProvider.class, method = "findCardUser")
+    List<CardUser> findCardUser(Map<String, String> conditionMap);
+
+    @SelectProvider(type = AccessControlMapperProvider.class, method = "countCardUser")
+    Long countCardUser(Map<String, String> conditionMap);
 }

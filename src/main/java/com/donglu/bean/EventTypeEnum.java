@@ -27,8 +27,9 @@ public enum  EventTypeEnum {
     车位计数入场(0x59),
     停车场手动开闸(0x0C),
     发卡器(0x99),
-    考勤打卡(0x0D);
-
+    考勤打卡(0x0D),
+    上机(0x60),
+    下机(0x61);
     private final int ascii;
 
     EventTypeEnum(int ascii) {

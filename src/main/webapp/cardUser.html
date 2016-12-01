@@ -1,0 +1,73 @@
+<div class="row">
+    <div class="col-xs-11">
+        <form id="form" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-1 control-label" for="cardSerialNumber">卡片编号</label>
+                <div class="col-sm-2">
+                    <input class="form-control" id="cardSerialNumber" name="cardSerialNumber" type="text"/>
+                </div>
+                <label class="col-sm-1 control-label" for="cardIdentifier">卡片内码</label>
+                <div class="col-sm-2">
+                    <input class="form-control" id="cardIdentifier" name="cardIdentifier" type="text"/>
+                </div>
+                <label class="col-sm-1 control-label" for="userName">用户姓名</label>
+                <div class="col-sm-2">
+                    <input class="form-control" id="userName" name="userName" type="text"/>
+                </div>
+                <label class="col-sm-1 control-label" for="userIdentifier">用户编号</label>
+                <div class="col-sm-2">
+                    <input class="form-control" id="userIdentifier" name="userIdentifier" type="text"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-xs-1">
+        <button id="submit" onclick="javascript:dataTable.ajax.reload()" type="button" class="btn btn-info">查询</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-info">
+            <div class="box-header">
+                <h3 class="box-title">设备刷卡记录</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>卡片编号</th>
+                        <th>卡片内码</th>
+                        <th>用户编号</th>
+                        <th>用户姓名</th>
+                        <th>用户部门</th>
+                        <th>卡片状态</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+<script>
+    var dataTable = $("#example2").DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "autoWidth": true,
+        "serverSide": true,
+        "sAjaxSource": "accessControl/cardUser",
+        "fnServerData":retrieveData,
+        "language": datatable_language_cn,
+        columns:[
+            {data:"cardIdentifier"},
+            {data:"cardSerialNumber"},
+            {data:"userIdentifier"},
+            {data:"userName"},
+            {data:"userGroup"},
+            {data:"cardStatusEnum"}
+        ]
+    });
+</script>

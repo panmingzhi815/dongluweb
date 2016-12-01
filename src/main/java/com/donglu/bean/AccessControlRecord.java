@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Data
 public class AccessControlRecord {
-    private int id;
+    private int acrId;
     private String deviceIdentifier;
     private String deviceName;
     private AccessControlState accessControlState;

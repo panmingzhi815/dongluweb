@@ -9,6 +9,7 @@ import java.util.Date;
  */
 @Data
 public class CardUsage {
+    private Long id;
     private String cardid;
     private String cardSerialNumber;
     private String deviceIdentifier;

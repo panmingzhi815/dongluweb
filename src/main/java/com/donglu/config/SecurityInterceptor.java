@@ -52,4 +52,10 @@ public class SecurityInterceptor {
         HttpSession session =request.getSession();
         session.setAttribute(KEY,object);
     }
+
+    public Object getLogin(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session =request.getSession();
+        return session.getAttribute(KEY);
+    }
 }
