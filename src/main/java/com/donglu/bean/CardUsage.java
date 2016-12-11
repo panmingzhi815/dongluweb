@@ -10,13 +10,15 @@ import java.util.Date;
 @Data
 public class CardUsage {
     private Long id;
-    private String cardid;
+    private String cardIdentifier;
     private String cardSerialNumber;
     private String deviceIdentifier;
     private String deviceName;
     private String userIdentifier;
     private String userName;
+    private String userGroup;
     private Date eventTime;
     private Date timestamp;
     private EventTypeEnum eventType;
+    private String imageName;
 }

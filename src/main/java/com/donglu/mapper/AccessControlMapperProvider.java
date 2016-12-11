@@ -2,6 +2,7 @@ package com.donglu.mapper;
 
 import com.donglu.bean.AccessControlState;
 import com.google.common.base.Strings;
+import net.sf.jsqlparser.util.SelectUtils;
 
 import java.util.Map;
 
@@ -9,6 +10,23 @@ import java.util.Map;
  * Created by panmingzhi on 2016/11/29 0029.
  */
 public class AccessControlMapperProvider {
+
+    public String findLastCardUsage(String deviceIdentifier) {
+        StringBuilder sql = new StringBuilder();
+
+        return sql.toString();
+    }
+
+    public String findDevice(Map<String ,String> map){
+        StringBuilder sql = new StringBuilder(200);
+        sql.append("SELECT d.Identifier as deviceIdentifier,d.Name as deviceName FROM Device d where 1 = 1 ");
+
+        String deviceIdentifier = map.get("deviceIdentifier");
+        if (!Strings.isNullOrEmpty(deviceIdentifier)) {
+            sql.append(" and d.Identifier = ").append(deviceIdentifier);
+        }
+        return sql.toString();
+    }
 
     public String findCardUser(Map<String, String> map) {
         StringBuilder sql = new StringBuilder(200);
@@ -46,7 +64,7 @@ public class AccessControlMapperProvider {
 
     public String findCardUsage(Map<String,String> map){
         StringBuilder sql = new StringBuilder(200);
-        sql.append("select id,cardid,cardSerialNumber,deviceIdentifier,deviceName,userIdentifier,userName,eventTime,timestamp,eventType from CardUsage where 1=1");
+        sql.append("select id,cardid as cardIdentifier,cardSerialNumber,deviceIdentifier,deviceName,userIdentifier,userName,eventTime,timestamp,eventType from CardUsage where 1=1");
         return cardUsage(map, sql);
     }
 

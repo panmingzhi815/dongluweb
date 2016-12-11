@@ -1,0 +1,168 @@
+<style>
+    .cardUser-content{
+        font-size: 25px;
+        padding-left: 20px;
+    }
+
+    .list-group-item {
+        position: relative;
+        display: block;
+        padding: 15px 20px;
+        margin-bottom: -1px;
+        background-color: #fff;
+        border: 1px solid #ddd
+    }
+</style>
+<section class="content">
+    <div class="row" style="margin-top:100px">
+        <div class="col-md-2"></div>
+        <div class="col-md-4">
+            <!-- Profile Image -->
+            <div id="cardUserInfo" class="box box-primary">
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b class="cardUser-content">用户编号: </b><b id="userIdentifier" class="cardUser-content"></b>
+                        </li>
+                        <li class="list-group-item">
+                            <b class="cardUser-content">用户姓名: </b><b id="userName" class="cardUser-content"></b>
+                        </li>
+                        <li class="list-group-item">
+                            <b class="cardUser-content">用户部门: </b><b id="userGroup" class="cardUser-content"></b>
+                        </li>
+                        <li class="list-group-item">
+                            <b class="cardUser-content">卡片编号: </b><b id="cardSerialNumber" class="cardUser-content"></b>
+                        </li>
+                        <li class="list-group-item">
+                            <b class="cardUser-content">卡片内码: </b><b id="cardIdentifier" class="cardUser-content"></b>
+                        </li>
+                        <li class="list-group-item">
+                            <b class="cardUser-content">刷卡事件: </b><b id="eventType" class="cardUser-content"></b>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#timeline" data-toggle="tab"><b>抓拍图片</b></a></li>
+                    <li><a href="#deviceList" data-toggle="tab"><b id="monitorDevice">监控设备:</b></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="active tab-pane" id="timeline"  style="height: 335px;">
+                        <img id="newImage" style="display: block;height: 100%;width: 100%;margin: auto" src="image/not_found_user_image.png" >
+                    </div>
+                    <div class="tab-pane" id="deviceList"  style="height: 335px;">
+                        <form id="deviceForm">
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</section>
+
+<script>
+
+    function refreshCardUserInfo() {
+        $.ajax({
+            url: "accessControl/lastCardUsage",
+            dataType:"json",
+            type:"get",
+            data:{
+                deviceIdentifier:$("input:radio[name='deviceRadio']:checked").val()
+            },
+            timeout:500,
+            success: function (data) {
+                if (data.meta.success == true) {
+                    status200();
+                    if (data.data){
+                        $("#userIdentifier").html(data.data.userIdentifier);
+                        $("#userName").html(data.data.userName);
+                        $("#userGroup").html(data.data.userGroup);
+                        $("#cardSerialNumber").html(data.data.cardSerialNumber);
+                        $("#cardIdentifier").html(data.data.cardIdentifier);
+                        $("#eventType").html(data.data.eventType);
+                        $("#newImage").attr("src","imageController/accessControlImage?imageName="+data.data.imageName);
+                    }else {
+                        $("#userIdentifier").html("");
+                        $("#userName").html("");
+                        $("#userGroup").html("");
+                        $("#cardSerialNumber").html("");
+                        $("#cardIdentifier").html("");
+                        $("#eventType").html("");
+                        $("#newImage").attr("src","");
+                    }
+                } else {
+                    status400();
+                }
+            },
+            statusCode: {
+                404: function () {
+                    status404();
+                },
+                400:function () {
+                    status400();
+                },
+                200:function () {
+                    status200();
+                }
+            },
+            complete:function () {
+                if(times){
+                    times = window.setTimeout(refreshCardUserInfo,500);
+                }
+            }
+        });
+    }
+
+    function status404() {
+        $("#cardUserInfo").removeClass("box-warning").removeClass("box-primary").removeClass("box-danger");
+        $("#cardUserInfo").addClass("box-danger");
+    }
+    function status400() {
+        $("#cardUserInfo").removeClass("box-primary").removeClass("box-danger").removeClass("box-warning");
+        $("#cardUserInfo").addClass("box-warning");
+    }
+    function status200() {
+        $("#cardUserInfo").removeClass("box-warning").removeClass("box-danger").removeClass("box-primary");
+        $("#cardUserInfo").addClass("box-primary");
+    }
+
+    function saveDeviceChecked() {
+        var val = $("input:radio[name='deviceRadio']:checked").val();
+        Cookies.set('deviceChecked', val, { expires: 365, path: '' });
+        $("#monitorDevice").html("监控设备:" + val);
+    }
+
+    $(function () {
+        $.ajax({
+            url:"accessControl/device",
+            dataType:"json",
+            type:"get",
+            success:function (data) {
+                if (data.meta.success == true) {
+                    var html = "<div class='col-md-12'><input name='deviceRadio' type='radio' value='' id='all' checked><label for='all'>全部</label></div>";
+                    $.each(data.data,function (index,d) {
+                        html += "<div class='col-md-3'><input onclick='saveDeviceChecked()' name='deviceRadio' type='radio' value='"+d.deviceIdentifier+"' id='"+d.deviceIdentifier+"'><label for='"+d.deviceIdentifier+"'>"+d.deviceIdentifier+"</label></div>"
+                    });
+                    $("#deviceForm").html(html);
+
+                    var deviceChecked = Cookies.get('deviceChecked');
+                    if (deviceChecked) {
+                        $("input[id='"+deviceChecked+"']").attr("checked",true);
+                        $("#monitorDevice").html("监控设备:" + deviceChecked);
+                    }
+                }else{
+                    alert(data.meta.message);
+                }
+            }
+        });
+        if (times){
+            window.clearInterval(times);
+        }
+        times = window.setTimeout(refreshCardUserInfo,500);
+    })
+</script>
+

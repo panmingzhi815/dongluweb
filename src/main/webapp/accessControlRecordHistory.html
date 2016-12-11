@@ -17,12 +17,6 @@
                 <label class="col-sm-1 control-label" for="accessControlState">状态</label>
                 <div class="col-sm-2">
                     <select class="form-control" id="accessControlState" name="accessControlState">
-                        <option value="全部">全部</option>
-                        <option value="待下载">待下载</option>
-                        <option value="己下载">己下载</option>
-                        <option value="待删除">待删除</option>
-                        <option value="删除失败">删除失败</option>
-                        <option value="下载失败">下载失败</option>
                     </select>
                 </div>
             </div>
@@ -65,10 +59,11 @@
         "lengthChange": false,
         "searching": false,
         "ordering": true,
-        "sAjaxSource": "accessControl/accessControlRecord",
         "fnServerData":retrieveData,
         "autoWidth": false,
         "language": datatable_language_cn,
+        "serverSide": true,
+        "sAjaxSource": "accessControl/accessControlRecord",
         columns:[
             {"data":"acrId","defaultContent": ""},
             {"data":"deviceName","defaultContent": ""},
@@ -76,12 +71,39 @@
             {"data":"cardSerialNumber","defaultContent": ""},
             {"data":"userIdentifier","defaultContent": ""},
             {"data":"userName","defaultContent": ""},
-            {"data":"accessControlState","defaultContent": ""},
+            {"data":"accessControlState","defaultContent": "",render: function (data, type, row, meta) {
+                if (data == '己下载'){
+                    return "<span class='label label-success'>" + data + "</span>";
+                }
+                if (data == '待下载' || data == '待删除'){
+                    return "<span class='label label-info'>" + data + "</span>";
+                }
+                return "<span class='label label-danger'>" + data + "</span>";
+            }},
             {"data":"checkCardEnabled","defaultContent": ""},
             {"data":"validTo","defaultContent": ""},
             {"data":"createTime","defaultContent": ""},
             {"data":"uploadTime","defaultContent": ""}
-        ],
-        "serverSide": true
+        ]
     });
+
+    $(function () {
+        $.ajax({
+            url:"accessControl/enum",
+            data:{enumType:"AccessControlState"},
+            type:"get",
+            dataType:"json",
+            success:function (data) {
+                if (data.meta.success == true) {
+                    var html = "";
+                    $.each(data.data,function (index, each) {
+                        html += "<option value='"+each.value+"'>"+each.name+"</option>";
+                    })
+                    $("#accessControlState").html(html);
+                }else{
+                    alert(data.meta.message);
+                }
+            }
+        });
+    })
 </script>

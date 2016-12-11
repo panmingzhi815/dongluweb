@@ -65,10 +65,9 @@ public class MyBatisConfig {
         logger.debug("--> sqlSessionFactory");
         final SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(dataSource());
-//        sqlSessionFactory.setPlugins(new Interceptor[]{new PageHelper()});
         sqlSessionFactory.setConfigLocation(new ClassPathResource("mybatis-config.xml"));
         sqlSessionFactory.setFailFast(true);
-        sqlSessionFactory.setMapperLocations(getResource("mapper", "**/*.xml"));
+        sqlSessionFactory.setMapperLocations(getResource("com.donglu.mapper", "*.xml"));
         return sqlSessionFactory.getObject();
     }
 

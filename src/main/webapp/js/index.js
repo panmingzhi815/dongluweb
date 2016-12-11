@@ -1,3 +1,4 @@
+var times;
 $(function(){
     $("aside section ul li a").click(function () {
         var selection_href = $(this).attr("href");
@@ -7,6 +8,8 @@ $(function(){
         }
         $(".content").html("");
         if(selection_href) {
+            window.clearInterval(times);
+            times = null;
             $(".content").load(selection_href);
         }
         $(".active").removeClass("active");

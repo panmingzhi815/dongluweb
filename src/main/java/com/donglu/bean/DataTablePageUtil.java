@@ -31,14 +31,20 @@ public class DataTablePageUtil {
 
     private Map<String,String> sortMap = new HashMap<>();
     private Map<String,String> conditionMap = new HashMap<>();
+    public DataTablePageUtil(){}
 
     public DataTablePageUtil(String tableParam,String searchParam){
+        LOGGER.debug("DataTablePageUtil tableParam:{}",tableParam);
+        LOGGER.debug("DataTablePageUtil searchParam:{}",searchParam);
         try {
-            JSONArray tableJsonArray = new JSONArray(tableParam);
-            JSONArray searchJsonArray = new JSONArray(searchParam);
-
-            parseTableJsonArray(tableJsonArray);
-            parseSearchJsonArray(searchJsonArray);
+            if (!Strings.isNullOrEmpty(tableParam)) {
+                JSONArray tableJsonArray = new JSONArray(tableParam);
+                parseTableJsonArray(tableJsonArray);
+            }
+            if (!Strings.isNullOrEmpty(searchParam)){
+                JSONArray searchJsonArray = new JSONArray(searchParam);
+                parseSearchJsonArray(searchJsonArray);
+            }
         } catch (JSONException e) {
             LOGGER.error("解析参数失败",e);
         }
@@ -76,6 +82,9 @@ public class DataTablePageUtil {
 
     public String getsortStr() {
         Set<Map.Entry<String, String>> entries = sortMap.entrySet();
+        if (entries.isEmpty()) {
+            return "id asc";
+        }
         return entries.stream().map(m->m.getKey() + " " + m.getValue()).reduce((r1,r2)->r1 + "," +r2).orElseGet(() -> "");
     }
 }

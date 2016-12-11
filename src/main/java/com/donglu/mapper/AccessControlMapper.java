@@ -3,9 +3,8 @@ package com.donglu.mapper;
 import com.donglu.bean.AccessControlRecord;
 import com.donglu.bean.CardUsage;
 import com.donglu.bean.CardUser;
+import com.donglu.bean.Device;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
@@ -17,21 +16,27 @@ import java.util.Map;
 @Mapper
 public interface AccessControlMapper {
 
-    @SelectProvider(type = AccessControlMapperProvider.class, method = "findCardUsage")
+//    @SelectProvider(type = AccessControlMapperProvider.class, method = "findCardUsage")
     List<CardUsage> findCardUsage(Map<String, String> conditionMap);
 
-    @SelectProvider(type = AccessControlMapperProvider.class, method = "countCardUsage")
+//    @SelectProvider(type = AccessControlMapperProvider.class, method = "countCardUsage")
     Long countCardUsage(Map<String, String> conditionMap);
 
-    @SelectProvider(type = AccessControlMapperProvider.class, method = "findAccessControlRecord")
+//    @SelectProvider(type = AccessControlMapperProvider.class, method = "findAccessControlRecord")
     List<AccessControlRecord> findAccessControlRecord(Map<String,String> map);
 
-    @SelectProvider(type = AccessControlMapperProvider.class, method = "countAccessControlRecord")
+//    @SelectProvider(type = AccessControlMapperProvider.class, method = "countAccessControlRecord")
     Long countAccessControlRecord(Map<String,String> map);
 
-    @SelectProvider(type = AccessControlMapperProvider.class, method = "findCardUser")
+//    @SelectProvider(type = AccessControlMapperProvider.class, method = "findCardUser")
     List<CardUser> findCardUser(Map<String, String> conditionMap);
 
-    @SelectProvider(type = AccessControlMapperProvider.class, method = "countCardUser")
+//    @SelectProvider(type = AccessControlMapperProvider.class, method = "countCardUser")
     Long countCardUser(Map<String, String> conditionMap);
+
+//    @SelectProvider(type = AccessControlMapperProvider.class, method = "findDevice")
+    List<Device> findDevice(Map<String, String> conditionMap);
+
+//    @SelectProvider(type = AccessControlMapperProvider.class, method = "findLastCardUsage")
+    CardUsage findLastCardUsage(Map<String,String> map);
 }

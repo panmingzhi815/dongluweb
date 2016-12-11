@@ -1,3 +1,91 @@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="myModalLabel"><span class="fa fa-credit-card"></span> 添加临时卡 </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">卡片编号</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="inputEmail3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">卡片内码</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="inputPassword3">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-success"> 确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="myModalLabel2"><span class="fa fa-credit-card"></span> 添加固定卡 </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="inputEmail4" class="col-sm-2 control-label">用户编号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputEmail4">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword5" class="col-sm-2 control-label">用户姓名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4" class="col-sm-2 control-label">卡片编号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputEmail4">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword5" class="col-sm-2 control-label">卡片内码</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword5" class="col-sm-2 control-label">用户部门</label>
+                        <div class="col-sm-10">
+                            <select type="text" class="form-control" id="inputPassword5">
+                                <option>东陆高新</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword5" class="col-sm-2 control-label">权限分组</label>
+                        <div class="col-sm-10">
+                            <select type="text" class="form-control" id="inputPassword5">
+                                <option>公司门禁组</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-success"> 确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
 <div class="row">
     <div class="col-xs-11">
         <form id="form" class="form-horizontal" role="form">
@@ -28,11 +116,18 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">设备刷卡记录</h3>
-            </div>
             <!-- /.box-header -->
             <div class="box-body">
+                <div>
+                    <button type="button" class="btn btn-success btn-sm fa fa-user-plus" data-toggle="modal" data-target="#myModal2"> 添加固定卡</button>
+                    <button type="button" class="btn btn-success btn-sm fa fa-credit-card" data-toggle="modal" data-target="#myModal"> 添加临时卡</button>
+                    <button type="button" class="btn btn-primary btn-sm fa fa-credit-card"> 分配卡片</button>
+                    <button type="button" class="btn btn-primary btn-sm fa fa-user"> 分配用户</button>
+                    <button type="button" class="btn btn-warning btn-sm fa fa-user-md"> 取消分配</button>
+                    <button type="button" class="btn btn-warning btn-sm fa fa-thumbs-down"> 挂失</button>
+                    <button type="button" class="btn btn-warning btn-sm fa fa-thumbs-up"> 解挂</button>
+                    <button type="button" class="btn btn-danger btn-sm fa fa-remove"> 删除</button>
+                </div>
                 <table id="example2" class="table table-bordered table-hover">
                     <thead>
                     <tr>
@@ -50,17 +145,18 @@
         </div>
     </div>
 </div>
+
 <script>
     var dataTable = $("#example2").DataTable({
         "paging": true,
         "lengthChange": false,
         "searching": false,
         "ordering": true,
-        "autoWidth": true,
-        "serverSide": true,
-        "sAjaxSource": "accessControl/cardUser",
         "fnServerData":retrieveData,
+        "autoWidth": false,
         "language": datatable_language_cn,
+        "serverSide": true,
+        sAjaxSource: "accessControl/cardUser",
         columns:[
             {data:"cardIdentifier"},
             {data:"cardSerialNumber"},
@@ -70,4 +166,5 @@
             {data:"cardStatusEnum"}
         ]
     });
+
 </script>
