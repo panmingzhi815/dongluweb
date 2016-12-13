@@ -2,109 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.donglu.mapper.AccessControlMapper">
-    <sql id="field_cardUser">
-        SELECT
-            p.id                   AS cardId,
-            p.PhysicalId           AS cardIdentifier,
-            p.serialNumber         AS cardSerialNumber,
-            p.Status               AS cardStatusEnum,
-            c.id                   AS userId,
-            c.name                 AS userName,
-            c.identifier           AS userIdentifier,
-            c.groupCodeNameJoinStr AS userGroup
-        FROM PhysicalCard p FULL JOIN CardUser c ON p.cardUser = c.id
-    </sql>
-    <sql id="where_cardUser">
-        <if test="userName != null and userName != ''">
-            c.name like '%'+#{userName}+'%'
-        </if>
-        <if test="userIdentifier != null and userIdentifier != ''">
-            AND c.identifier like '%'+#{userIdentifier}+'%'
-        </if>
-        <if test="cardIdentifier != null and cardIdentifier != ''">
-            AND p.physicalId like '%'+#{cardIdentifier}+'%'
-        </if>
-        <if test="cardSerialNumber != null and cardSerialNumber != ''">
-            AND p.serialNumber like '%'+#{cardSerialNumber}+'%'
-        </if>
-    </sql>
-    <sql id="field_cardUsage">
-        SELECT
-            cu.id                       as id,
-            cu.cardid                   AS cardIdentifier,
-            cu.cardSerialNumber         as cardSerialNumber,
-            cu.deviceIdentifier         as deviceIdentifier,
-            cu.deviceName               as deviceName,
-            cu.userIdentifier           as userIdentifier,
-            cu.userName                 as userName,
-            cu.userGroupCodeNameJoinStr as userGroup,
-            cu.eventTime                as eventTime,
-            cu.timestamp                as timestamp,
-            cu.eventType                as eventType,
-            cu.imageName                as imageName
-        FROM CardUsage cu
-    </sql>
-    <sql id="field_accessControlRecord">
-        SELECT
-            acr.id                   as acrId,
-            acr.accessControlState   as accessControlState,
-            d.Identifier             as deviceIdentifier,
-            d.Name                   as deviceName,
-            pc.PhysicalId            as cardIdentifier,
-            pc.SerialNumber          as cardSerialNumber,
-            cu.identifier            as userIdentifier,
-            cu.name                  as userName,
-            acr.createTime           as createTime,
-            acr.checkCardEnabled     as checkCardEnabled,
-            acr.checkValidPeriod     as checkValidPeriod,
-            acr.enableOpenFromInside as enableOpenFromInside,
-            acr.enableWeekTable      as enableWeekTable,
-            acr.validFrom            as validFrom,
-            acr.validTo              as validTo,
-            acr.weektable            as weektable,
-            acr.uploadTime           as uploadTime
-        FROM AccessControlRecord acr LEFT JOIN PhysicalCard pc on acr.card_id = pc.id
-            LEFT JOIN Device d on acr.device = d.id
-            LEFT JOIN CardUser cu on pc.cardUser = cu.id
-    </sql>
-    <sql id="where_cardUsage">
-        <where>
-            <if test="userName != null and userName != ''">
-                cu.userName like '%'+#{userName}+'%'
-            </if>
-            <if test="deviceIdentifier != null and deviceIdentifier != ''">
-               AND cu.deviceIdentifier like '%'+#{deviceIdentifier}+'%'
-            </if>
-            <if test="deviceName != null and deviceName != ''">
-                AND cu.deviceName like '%'+#{deviceName}+'%'
-            </if>
-            <if test="cardIdentifier != null and cardIdentifier != ''">
-                AND cu.cardid like '%'+#{cardIdentifier}+'%'
-            </if>
-            <if test="startTime != null">
-                <if test="endTime != null">
-                    AND cu.eventTime between #{startTime} and #{endTime}
-                </if>
-            </if>
-        </where>
-    </sql>
-    
-    <sql id="where_accessControlRecord">
-        <where>
-            <if test="userName != null and userName != ''">
-                cu.name like '%'+#{userName}+'%'
-            </if>
-            <if test="accessControlState != null and accessControlState != 0">
-                AND acr.accessControlState = #{accessControlState}
-            </if>
-            <if test="deviceName != null and deviceName != ''">
-                AND d.Name like '%'+#{deviceName}+'%'
-            </if>
-            <if test="cardIdentifier != null and cardIdentifier != ''">
-                AND pc.PhysicalId like '%'+#{cardIdentifier}+'%'
-            </if>
-        </where>
-    </sql>
+
     <select id="findCardUsage" resultType="com.donglu.bean.CardUsage" parameterType="map">
         <include refid="field_cardUsage"/>
         <include refid="where_cardUsage"/>
@@ -147,5 +45,109 @@
         <include refid="where_cardUsage"/>
     </select>
 
+    <sql id="field_cardUser">
+        SELECT
+        p.id                   AS cardId,
+        p.PhysicalId           AS cardIdentifier,
+        p.serialNumber         AS cardSerialNumber,
+        p.Status               AS cardStatusEnum,
+        c.id                   AS userId,
+        c.name                 AS userName,
+        c.identifier           AS userIdentifier,
+        c.groupCodeNameJoinStr AS userGroup
+        FROM PhysicalCard p FULL JOIN CardUser c ON p.cardUser = c.id
+    </sql>
+    <sql id="where_cardUser">
+        <where>
+            <if test="userName != null and userName != ''">
+                c.name like '%'+#{userName}+'%'
+            </if>
+            <if test="userIdentifier != null and userIdentifier != ''">
+                AND c.identifier like '%'+#{userIdentifier}+'%'
+            </if>
+            <if test="cardIdentifier != null and cardIdentifier != ''">
+                AND p.physicalId like '%'+#{cardIdentifier}+'%'
+            </if>
+            <if test="cardSerialNumber != null and cardSerialNumber != ''">
+                AND p.serialNumber like '%'+#{cardSerialNumber}+'%'
+            </if>
+        </where>
+    </sql>
+    <sql id="field_cardUsage">
+        SELECT
+        cu.id                       as id,
+        cu.cardid                   AS cardIdentifier,
+        cu.cardSerialNumber         as cardSerialNumber,
+        cu.deviceIdentifier         as deviceIdentifier,
+        cu.deviceName               as deviceName,
+        cu.userIdentifier           as userIdentifier,
+        cu.userName                 as userName,
+        cu.userGroupCodeNameJoinStr as userGroup,
+        cu.eventTime                as eventTime,
+        cu.timestamp                as timestamp,
+        cu.eventType                as eventType,
+        cu.imageName                as imageName
+        FROM CardUsage cu
+    </sql>
+    <sql id="field_accessControlRecord">
+        SELECT
+        acr.id                   as acrId,
+        acr.accessControlState   as accessControlState,
+        d.Identifier             as deviceIdentifier,
+        d.Name                   as deviceName,
+        pc.PhysicalId            as cardIdentifier,
+        pc.SerialNumber          as cardSerialNumber,
+        cu.identifier            as userIdentifier,
+        cu.name                  as userName,
+        acr.createTime           as createTime,
+        acr.checkCardEnabled     as checkCardEnabled,
+        acr.checkValidPeriod     as checkValidPeriod,
+        acr.enableOpenFromInside as enableOpenFromInside,
+        acr.enableWeekTable      as enableWeekTable,
+        acr.validFrom            as validFrom,
+        acr.validTo              as validTo,
+        acr.weektable            as weektable,
+        acr.uploadTime           as uploadTime
+        FROM AccessControlRecord acr LEFT JOIN PhysicalCard pc on acr.card_id = pc.id
+        LEFT JOIN Device d on acr.device = d.id
+        LEFT JOIN CardUser cu on pc.cardUser = cu.id
+    </sql>
+    <sql id="where_cardUsage">
+        <where>
+            <if test="userName != null and userName != ''">
+                cu.userName like '%'+#{userName}+'%'
+            </if>
+            <if test="deviceIdentifier != null and deviceIdentifier != ''">
+                AND cu.deviceIdentifier like '%'+#{deviceIdentifier}+'%'
+            </if>
+            <if test="deviceName != null and deviceName != ''">
+                AND cu.deviceName like '%'+#{deviceName}+'%'
+            </if>
+            <if test="cardIdentifier != null and cardIdentifier != ''">
+                AND cu.cardid like '%'+#{cardIdentifier}+'%'
+            </if>
+            <if test="startTime != null">
+                <if test="endTime != null">
+                    AND cu.eventTime between #{startTime} and #{endTime}
+                </if>
+            </if>
+        </where>
+    </sql>
 
+    <sql id="where_accessControlRecord">
+        <where>
+            <if test="userName != null and userName != ''">
+                cu.name like '%'+#{userName}+'%'
+            </if>
+            <if test="accessControlState != null and accessControlState != 0">
+                AND acr.accessControlState = #{accessControlState}
+            </if>
+            <if test="deviceName != null and deviceName != ''">
+                AND d.Name like '%'+#{deviceName}+'%'
+            </if>
+            <if test="cardIdentifier != null and cardIdentifier != ''">
+                AND pc.PhysicalId like '%'+#{cardIdentifier}+'%'
+            </if>
+        </where>
+    </sql>
 </mapper>
