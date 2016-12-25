@@ -15,17 +15,18 @@ var datatable_language_cn = {
 
 function retrieveData( sSource, aoData, fnCallback ) {
     //查询条件称加入参数数组
-    var searchJson = $("form").serializeArray();
+    var searchJson = $("#searchForm").serializeArray();
     $.ajax( {
         type: "GET",
         url: sSource,
         dataType:"json",
-        data: "tableParam="+JSON.stringify(aoData) + "&searchParam=" + JSON.stringify(searchJson),
+        data:{tableParam:JSON.stringify(aoData),searchParam:JSON.stringify(searchJson)},
+        // data: "tableParam="+JSON.stringify(aoData) + "&searchParam=" + JSON.stringify(searchJson),
         success: function(data) {
             if (data.meta.success == true){
                 fnCallback(data);
             }else{
-                alert(data.meta.message);
+                $.jGrowl(data.meta.message, { life: 5000,position:"center"});
             }
         },
         error:function () {
@@ -34,6 +35,18 @@ function retrieveData( sSource, aoData, fnCallback ) {
     });
 }
 
+$(function(){
+    //给行绑定选中事件
+    $('.table tbody').on( 'click', 'tr', function () {
+        if ($(this).hasClass('info')) {
+            $(this).removeClass('info');
+        }
+        else {
+            $("#example1 tr").removeClass("info");
+            $(this).addClass('info');
+        }
+    } );
+})
 
 function deserialize(form,data){
     var rcheck = /^(?:radio|checkbox)$/i,

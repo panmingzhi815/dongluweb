@@ -50,7 +50,7 @@ public class VisitorController {
         }
         cardUser.setUserPassword(null);
         securityInterceptor.loginSesseion(cardUser);
-        return new Response().success();
+        return new Response().successMsg("登录成功");
     }
 
     @RequestMapping(value = "/visitor",method = RequestMethod.GET)

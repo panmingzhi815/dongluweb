@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 2 | Top Navigation</title>
+    <title>东陆一卡通访客系统</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" href="../favicon.ico" />
     <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/dist/css/AdminLTE.min.css">
     <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/dist/css/skins/_all-skins.min.css">
@@ -69,16 +70,6 @@
                 ]
             });
 
-            //给行绑定选中事件
-            $('#example1 tbody').on( 'click', 'tr', function () {
-                if ($(this).hasClass('info')) {
-                    $(this).removeClass('info');
-                }
-                else {
-                    $("#example1 tr").removeClass("info");
-                    $(this).addClass('info');
-                }
-            } );
         })
 
         function changeAction(modalTitle,type) {

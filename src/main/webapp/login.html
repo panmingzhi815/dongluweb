@@ -62,7 +62,7 @@
               success: function (data) {
                   if (data.meta.success){
                       $.jGrowl(data.meta.message, { life: 1000,position:"center",beforeClose: function(e,m) {
-                          window.location = "index.html";
+                          window.location = "manage.html";
                       }});
                   }else {
                       $.jGrowl(data.meta.message, { life: 1000,position:"center"});
