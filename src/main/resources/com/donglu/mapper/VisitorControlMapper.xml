@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.donglu.mapper.VisitorControlMapper">
+    <insert id="insert" parameterType="com.donglu.bean.VisitorBooking">
+        INSERT INTO VisitorBooking (visitorName, visitorTime, IDCard, address, companyName, operaName, phone, reason, sex, cardUserId, userGroup, userName)
+        VALUES
+            (#{visitorName}, #{visitorTime}, #{IDCard}, #{address}, #{companyName}, #{operaName}, #{phone}, #{reason},
+                             #{sex}, #{cardUserId}, #{userGroup}, #{userName});
+    </insert>
+    <update id="update" parameterType="com.donglu.bean.VisitorBooking">
+        UPDATE VisitorBooking
+        SET visitorName = #{visitorName},
+            visitorTime   = #{visitorTime},
+            IDCard        = #{IDCard},
+            address       = #{address},
+            companyName   = #{companyName},
+            operaName     = #{operaName},
+            phone         = #{phone},
+            reason        = #{reason},
+            sex           = #{sex},
+            cardUserId    = #{cardUserId},
+            userGroup     = #{userGroup},
+            userName      = #{userName}
+        WHERE id = #{id};
+    </update>
+    <delete id="deleteVisitorBooking">
+        DELETE FROM VisitorBooking WHERE id = #{id}
+    </delete>
+    <select id="findVisitorBookList" resultType="com.donglu.bean.VisitorBooking">
+        SELECT * FROM VisitorBooking
+    </select>
+    <select id="countVisitorBookList" resultType="java.lang.Long">
+        SELECT count(1) FROM VisitorBooking
+    </select>
+</mapper>

@@ -21,6 +21,11 @@ public class Response implements Serializable {
         return this;
     }
 
+    public Response successMsg(String message){
+        this.setMeta(new Meta(true,message));
+        return this;
+    }
+
     public Response success(Object data) {
         this.meta = new Meta(true, OK);
         this.data = data;
@@ -32,7 +37,7 @@ public class Response implements Serializable {
         return this;
     }
 
-    public Response failure(String message) {
+    public Response failureMsg(String message) {
         this.meta = new Meta(false, message);
         return this;
     }

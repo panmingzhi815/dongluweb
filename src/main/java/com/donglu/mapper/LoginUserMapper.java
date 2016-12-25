@@ -1,13 +1,19 @@
 package com.donglu.mapper;
 
+import com.donglu.bean.CardUser;
 import com.donglu.bean.SystemAccount;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
+@Component
 public interface LoginUserMapper {
 
-    @Select("select * from SystemAccout lu where lu.accountName = #{accountName}")
     SystemAccount findOne(String accountName);
 
+    CardUser findCardUser(String idCard);
 }

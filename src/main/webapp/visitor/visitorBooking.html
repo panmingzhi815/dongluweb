@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE 2 | Top Navigation</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../plugins/Font-Awesome-3.2.1/css/font-awesome.css">
+    <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/plugins/datatables/dataTables.bootstrap.css">
+
+    <!-- jQuery 2.2.3 -->
+    <script src="../plugins/AdminLTE-2.3.7/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="../plugins/AdminLTE-2.3.7/bootstrap/js/bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="../plugins/AdminLTE-2.3.7/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="../plugins/AdminLTE-2.3.7/plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../plugins/AdminLTE-2.3.7/dist/js/app.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="../plugins/AdminLTE-2.3.7/dist/js/demo.js"></script>
+
+    <script src="../plugins/AdminLTE-2.3.7/plugins/iCheck/icheck.min.js"></script>
+    <script src="../plugins/AdminLTE-2.3.7/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../plugins/AdminLTE-2.3.7/plugins/datatables/dataTables.bootstrap.min.js"></script>
+
+    <script src="../plugins/jgrowl/jquery.jgrowl.min.js"></script>
+    <link rel="stylesheet" href="../plugins/jgrowl/jquery.jgrowl.min.css">
+
+    <!-- Include Date Range Picker -->
+    <script type="text/javascript" src="../plugins/AdminLTE-2.3.7/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="../plugins/AdminLTE-2.3.7/plugins/datepicker/datepicker3.css" />
+    <script type="text/javascript" src="../plugins/AdminLTE-2.3.7/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js" charset="UTF-8"></script>
+    <!-- Include Date Range Picker -->
+
+    <script src="../js/datatableCommon.js"></script>
+
+    <script>
+        var table;
+        $(function () {
+            $("#visitorTime").datepicker({
+                autoclose:true,
+                format:"yyyy-mm-dd"
+            });
+
+            table = $("#example1").DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "fnServerData": retrieveData,
+                "autoWidth": true,
+                "language": datatable_language_cn,
+                "serverSide": true,
+                sAjaxSource: "../visitorController/visitor",
+                columns: [
+                    {data: "id", searchable: false},
+                    {data: "visitorName"},
+                    {data: "companyName"},
+                    {data: "IDCard"},
+                    {data: "sex"},
+                    {data: "phone"},
+                    {data: "visitorTime", searchable: false},
+                    {data: "reason"}
+                ]
+            });
+
+            //给行绑定选中事件
+            $('#example1 tbody').on( 'click', 'tr', function () {
+                if ($(this).hasClass('info')) {
+                    $(this).removeClass('info');
+                }
+                else {
+                    $("#example1 tr").removeClass("info");
+                    $(this).addClass('info');
+                }
+            } );
+        })
+
+        function changeAction(modalTitle,type) {
+            $("#modalTitle").html(modalTitle);
+            $("#visitorBookForm").attr("type",type);
+            $("#visitorBookForm")[0].reset();
+
+            if(type == 'post'){
+                $("#visitorBookForm").attr("action","../visitorController/visitor");
+                return;
+            }
+
+            var selected =  table.row('.info').data();
+            if(selected) {
+                deserialize("visitorBookForm",selected);
+            }
+
+            if (type == 'delete'){
+                $("#visitorBookForm").attr("action","../visitorController/visitor/" + $("#id").val());
+            }
+        }
+
+        function saveVisitorBooking() {
+            var data = $("#visitorBookForm").serializeArray();
+            var action = $("#visitorBookForm").attr("action");
+            var type = $("#visitorBookForm").attr("type");
+            $.ajax({
+                url: action,
+                type: type,
+                data: data,
+                success: function (data) {
+                    if (data.meta.success) {
+                        $.jGrowl(data.meta.message, {
+                            life: 100, position: "center", beforeClose: function (e, m) {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        $.jGrowl(data.meta.message, {life: 5000, position: "center"});
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body class="hold-transition skin-blue layout-top-nav">
+<div class="wrapper">
+
+    <header class="main-header">
+        <nav class="navbar navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="#" class="navbar-brand"><b>东陆一卡通</b></a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title" id="myModalLabel"><span class="fa fa-credit-card"></span> <b id ="modalTitle">添加访客预约</b> </h4>
+                </div>
+                <div class="modal-body">
+                    <form id="visitorBookForm" class="form-horizontal" role="form">
+                        <input type="hidden" id="id" name="id">
+                        <div class="form-group">
+                            <label for="visitorName" class="col-sm-2 control-label">访客姓名</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="visitorName" name="visitorName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sex" class="col-sm-2 control-label">访客性别</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2" id="sex" name="sex" style="width: 100%;">
+                                    <option value="男" selected="selected">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="IDCard" class="col-sm-2 control-label">身份证号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="IDCard" name="IDCard">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="col-sm-2 control-label">联系电话</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="phone" name="phone">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="companyName" class="col-sm-2 control-label">工作单位</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="companyName" name="companyName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reason" class="col-sm-2 control-label">来访原因</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="reason" name="reason">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="visitorTime" class="col-sm-2 control-label">来访时间</label>
+                            <div class="col-sm-8">
+                                <span style="position: relative; z-index: 9999;">
+                                    <input type="text" class="form-control" id="visitorTime" name="visitorTime">
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-success" onclick="saveVisitorBooking()"> 确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-wrapper">
+        <div class="container">
+            <section class="content-header">
+                <button type="button" class="btn btn-success icon-plus" data-toggle="modal" data-target="#myModal2" onclick="changeAction('添加预约','post')"> 添加预约</button>
+                <button type="button" class="btn btn-warning icon-edit" data-toggle="modal" data-target="#myModal2" onclick="changeAction('修改预约','put')"> 修改预约</button>
+                <button type="button" class="btn btn-danger icon-remove" data-toggle="modal" data-target="#myModal2" onclick="changeAction('删除预约','delete')"> 删除预约</button>
+            </section>
+            <section class="content">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">访客预约列表</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example1" class="table table-bordered table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>流水号</th>
+                                <th>访客姓名</th>
+                                <th>单位</th>
+                                <th>身份证号</th>
+                                <th>性别</th>
+                                <th>联系电话</th>
+                                <th>预约时间</th>
+                                <th>来访原因</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -90,7 +90,7 @@ public class AccessController {
             case "EventTypeEnum":
                 return new Response().success(getJsonObjects(EventTypeEnum.values()));
             default:
-                return new Response().failure("未找到对应的枚举：" + enumType);
+                return new Response().failureMsg("未找到对应的枚举：" + enumType);
         }
     }
 

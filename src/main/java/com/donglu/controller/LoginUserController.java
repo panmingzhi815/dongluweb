@@ -5,16 +5,11 @@ import com.donglu.bean.Response;
 import com.donglu.bean.SystemAccount;
 import com.donglu.config.SecurityInterceptor;
 import com.donglu.mapper.LoginUserMapper;
-import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 /**
  * Created by panmingzhi on 2016/11/27 0027.
@@ -34,16 +29,26 @@ public class LoginUserController {
     public Response login(@RequestParam String accountName, @RequestParam String accountPassword){
         SystemAccount loginUser = loginUserMapper.findOne(accountName);
         if (loginUser == null || !loginUser.getAccountPassword().equals(accountPassword)) {
-            return new Response().failure("用户名或密码错误");
+            return new Response().failureMsg("用户名或密码错误");
         }
         loginUser.setAccountPassword(null);
         securityInterceptor.loginSesseion(loginUser);
-        return new Response().success();
+        return new Response().successMsg("登录成功");
     }
 
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public Response login(){
-        SystemAccount systemAccount = (SystemAccount) securityInterceptor.getLogin();
-        return new Response().success(systemAccount);
+        Object login = securityInterceptor.getLogin();
+        if (login == null) {
+            return new Response().failureMsg("请重新登录");
+        }
+        return new Response().success(login);
     }
+
+    @RequestMapping(value = "/loginOut",method = RequestMethod.GET)
+    public Response loginOut(){
+        securityInterceptor.loginOut();
+        return new Response().success();
+    }
+
 }

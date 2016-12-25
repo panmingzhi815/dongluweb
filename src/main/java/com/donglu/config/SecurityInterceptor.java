@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -55,7 +54,7 @@ public class SecurityInterceptor {
         if (session.getAttribute(KEY) == null){
             String message = "用户未登录";
             LOGGER.info(message);
-            return new Response().failure(message);
+            return new Response().failureMsg(message);
         }
 
         return point.proceed();
@@ -71,5 +70,11 @@ public class SecurityInterceptor {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session =request.getSession();
         return session.getAttribute(KEY);
+    }
+
+    public void loginOut() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session =request.getSession();
+        session.removeAttribute(KEY);
     }
 }

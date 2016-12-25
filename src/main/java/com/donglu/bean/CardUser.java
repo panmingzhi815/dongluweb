@@ -21,4 +21,6 @@ public class CardUser implements Serializable {
     private String userIdentifier;
     private String userGroup;
     private String userIDCode;
+
+    private String userPassword;
 }

@@ -57,6 +57,7 @@
         c.groupCodeNameJoinStr AS userGroup
         FROM PhysicalCard p FULL JOIN CardUser c ON p.cardUser = c.id
     </sql>
+
     <sql id="where_cardUser">
         <where>
             <if test="userName != null and userName != ''">

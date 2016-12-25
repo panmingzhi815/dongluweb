@@ -18,20 +18,26 @@ $(function(){
     })
 
     $.ajax({
-        url:"admin/login",
+        url:"/admin/login",
         type:"json",
         method:"GET",
         success:function (r) {
             if (r.meta.success){
-                $("#loginName1").html(r.data.accountName);
-                $("#loginName2").html(r.data.accountName);
-                $("#loginDescribe").html(r.data.accountDescript);
+                $("span[name='userLoginName']").html(r.data.accountName);
             }else{
-                alert("该会话己结束，请重新登录");
-                window.location = "login.html";
+                $.jGrowl(r.meta.message, { life: 1000,position:"center",beforeClose: function(e,m) {
+                    window.location = "login.html";
+                }});
             }
         }
     })
+
+    var active = $("aside section ul li .active");
+    if (active) {
+        var selection_href = active.attr("href");
+        var selection_target = active.attr("target");
+        $(".content").load(selection_href);
+    }
 });
 
 var datatable_language_cn = {
@@ -64,7 +70,7 @@ function retrieveData( sSource, aoData, fnCallback ) {
             }
         },
         error:function () {
-            alert("加载数据失败");
+            $.jGrowl("加载数据失败", { life: 5000,position:"center"});
         }
     });
 }

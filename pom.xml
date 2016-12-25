@@ -6,7 +6,7 @@
 	<groupId>org.pan</groupId>
 	<artifactId>dongluApi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>dongluApi</name>
 	<description>Demo project for Spring Boot</description>
@@ -23,7 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<swagger2.version>2.2.2</swagger2.version>
-		<pagehelper.version>4.1.7-SNAPSHOT</pagehelper.version>
+		<pagehelper.version>4.2.1</pagehelper.version>
 		<lombok.version>1.16.10</lombok.version>
 		<jtds.version>1.3.1</jtds.version>
 		<mybatis-spring-boot.version>1.1.1</mybatis-spring-boot.version>
@@ -51,7 +51,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.jtds</groupId>
@@ -62,6 +61,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -101,18 +105,4 @@
 			<artifactId>json</artifactId>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<mainClass>com.donglu.DongluwebApplication</mainClass>
-					<fork>true</fork>
-					<jmxPort>9090</jmxPort>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
