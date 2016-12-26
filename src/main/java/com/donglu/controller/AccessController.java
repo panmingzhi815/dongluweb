@@ -31,7 +31,7 @@ public class AccessController {
         PageHelper.offsetPage(0,1,false);
         PageHelper.orderBy("CardUsage.timestamp desc");
 
-        HashMap<String, String> map = Maps.newHashMap();
+        HashMap<String, Object> map = Maps.newHashMap();
         map.put("deviceIdentifier",deviceIdentifier);
         CardUsage usage = accessControlMapper.findLastCardUsage(map);
         return new Response().success(usage);

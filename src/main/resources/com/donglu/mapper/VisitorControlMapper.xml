@@ -28,9 +28,24 @@
         DELETE FROM VisitorBooking WHERE id = #{id}
     </delete>
     <select id="findVisitorBookList" resultType="com.donglu.bean.VisitorBooking">
-        SELECT * FROM VisitorBooking
+        SELECT * FROM VisitorBooking vb
+        <include refid="whereVisitorBooking"/>
     </select>
     <select id="countVisitorBookList" resultType="java.lang.Long">
         SELECT count(1) FROM VisitorBooking
+        <include refid="whereVisitorBooking"/>
     </select>
+    <sql id="whereVisitorBooking">
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="userName != null">
+                userName = #{userName}
+            </if>
+            <if test="IDCard != null">
+                IDCard = #{IDCard}
+            </if>
+        </where>
+    </sql>
 </mapper>

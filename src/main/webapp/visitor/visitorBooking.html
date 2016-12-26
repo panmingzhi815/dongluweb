@@ -70,6 +70,15 @@
                 ]
             });
 
+            $('#example1 tbody').on( 'click', 'tr', function () {
+                if ($(this).hasClass('info')) {
+                    $(this).removeClass('info');
+                }
+                else {
+                    $("#example1 tr").removeClass("info");
+                    $(this).addClass('info');
+                }
+            } );
         })
 
         function changeAction(modalTitle,type) {

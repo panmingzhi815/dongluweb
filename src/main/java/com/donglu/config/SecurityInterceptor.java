@@ -60,7 +60,7 @@ public class SecurityInterceptor {
         return point.proceed();
     }
 
-    public void loginSesseion(Object object){
+    public void loginSession(Object object){
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session =request.getSession();
         session.setAttribute(KEY,object);

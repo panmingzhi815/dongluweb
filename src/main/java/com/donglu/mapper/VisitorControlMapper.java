@@ -14,9 +14,9 @@ import java.util.Map;
 @Component
 public interface VisitorControlMapper {
 
-    List<VisitorBooking> findVisitorBookList(Map<String, String> conditionMap);
+    List<VisitorBooking> findVisitorBookList(Map<String, Object> conditionMap);
 
-    Long countVisitorBookList(Map<String, String> conditionMap);
+    Long countVisitorBookList(Map<String, Object> conditionMap);
 
     void insert(VisitorBooking visitorBooking);
 

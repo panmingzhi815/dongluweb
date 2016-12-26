@@ -1,7 +1,6 @@
 package com.donglu.bean;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 import lombok.Data;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Data
 public class DataTablePageUtil {
@@ -30,7 +27,7 @@ public class DataTablePageUtil {
     private int length = 10; // 数据长度'10'
 
     private Map<String,String> sortMap = new HashMap<>();
-    private Map<String,String> conditionMap = new HashMap<>();
+    private Map<String,Object> conditionMap = new HashMap<>();
     public DataTablePageUtil(){}
 
     public DataTablePageUtil(String tableParam,String searchParam){

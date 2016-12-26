@@ -18,20 +18,20 @@ import java.util.Map;
 @Component
 public interface AccessControlMapper {
 
-    List<CardUsage> findCardUsage(Map<String, String> conditionMap);
+    List<CardUsage> findCardUsage(Map<String, Object> conditionMap);
 
-    Long countCardUsage(Map<String, String> conditionMap);
+    Long countCardUsage(Map<String, Object> conditionMap);
 
-    List<AccessControlRecord> findAccessControlRecord(Map<String,String> map);
+    List<AccessControlRecord> findAccessControlRecord(Map<String,Object> map);
 
-    Long countAccessControlRecord(Map<String,String> map);
+    Long countAccessControlRecord(Map<String,Object> map);
 
-    List<CardUser> findCardUser(Map<String, String> conditionMap);
+    List<CardUser> findCardUser(Map<String, Object> conditionMap);
 
-    Long countCardUser(Map<String, String> conditionMap);
+    Long countCardUser(Map<String, Object> conditionMap);
 
-    List<Device> findDevice(Map<String, String> conditionMap);
+    List<Device> findDevice(Map<String, Object> conditionMap);
 
-    CardUsage findLastCardUsage(Map<String,String> map);
+    CardUsage findLastCardUsage(Map<String,Object> map);
 
 }

@@ -32,7 +32,7 @@ public class LoginUserController {
             return new Response().failureMsg("用户名或密码错误");
         }
         loginUser.setAccountPassword(null);
-        securityInterceptor.loginSesseion(loginUser);
+        securityInterceptor.loginSession(loginUser);
         return new Response().successMsg("登录成功");
     }
 

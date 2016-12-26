@@ -5,17 +5,17 @@ import com.donglu.config.SecurityInterceptor;
 import com.donglu.mapper.LoginUserMapper;
 import com.donglu.mapper.VisitorControlMapper;
 import com.github.pagehelper.PageHelper;
-import org.apache.ibatis.annotations.Param;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.jws.WebParam;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 访客控制器
@@ -49,7 +49,7 @@ public class VisitorController {
             return new Response().failureMsg("用户名或密码错误");
         }
         cardUser.setUserPassword(null);
-        securityInterceptor.loginSesseion(cardUser);
+        securityInterceptor.loginSession(cardUser);
         return new Response().successMsg("登录成功");
     }
 
@@ -59,18 +59,36 @@ public class VisitorController {
         PageHelper.offsetPage(mapDataTablePageUtil.getStart(),mapDataTablePageUtil.getLength(),false);
         PageHelper.orderBy(mapDataTablePageUtil.getsortStr());
 
-        List<VisitorBooking> visitorBookList = visitorControlMapper.findVisitorBookList(mapDataTablePageUtil.getConditionMap());
-        Long count = visitorControlMapper.countVisitorBookList(mapDataTablePageUtil.getConditionMap());
+        Map<String, Object> conditionMap = mapDataTablePageUtil.getConditionMap();
+        CardUser cardUser = (CardUser) securityInterceptor.getLogin();
+        conditionMap.put("userName", cardUser.getUserName());
+
+        List<VisitorBooking> visitorBookList = visitorControlMapper.findVisitorBookList(conditionMap);
+        Long count = visitorControlMapper.countVisitorBookList(conditionMap);
         return new ResponseTableList(count, visitorBookList);
     }
 
     @RequestMapping(value = "/visitor",method = RequestMethod.POST)
     public Response insertVisitorBooking(VisitorBooking visitorBooking) {
+        HashMap<String, Object> paramMap = Maps.newHashMap();
+        paramMap.put("IDCard",visitorBooking.getIDCard());
+        Long aLong = visitorControlMapper.countVisitorBookList(paramMap);
+        if (aLong > 0) {
+            return new Response().failureMsg("该访客身份证件己登记");
+        }
         return insertOrUpdateVisitorBooking(visitorBooking);
     }
 
     @RequestMapping(value = "/visitor",method = RequestMethod.PUT)
     public Response updateVisitorBooking(VisitorBooking visitorBooking) {
+        HashMap<String, Object> paramMap = Maps.newHashMap();
+        paramMap.put("IDCard",visitorBooking.getIDCard());
+        paramMap.put("id",visitorBooking.getId());
+        Long aLong = visitorControlMapper.countVisitorBookList(paramMap);
+        if (aLong > 0) {
+            return new Response().failureMsg("该访客身份证件己登记");
+        }
+
         return insertOrUpdateVisitorBooking(visitorBooking);
     }
 
