@@ -38,13 +38,13 @@
     <sql id="whereVisitorBooking">
         <where>
             <if test="id != null">
-                id = #{id}
+                id != #{id}
             </if>
             <if test="userName != null">
-                userName = #{userName}
+                AND userName = #{userName}
             </if>
             <if test="IDCard != null">
-                IDCard = #{IDCard}
+                AND IDCard = #{IDCard}
             </if>
         </where>
     </sql>

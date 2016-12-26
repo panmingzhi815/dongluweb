@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
@@ -37,6 +38,14 @@ public class ImageController {
     private static Logger LOGGER = LoggerFactory.getLogger(ImageController.class);
     private String accessControlImagePath = "";
 
+    public void setAccessControlImagePath(String accessControlImagePath){
+        try {
+            this.accessControlImagePath = new String(accessControlImagePath.getBytes("iso-8859-1"),"utf-8");
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("初始化图片访问路径失败",e);
+        }
+    }
+
     @PostConstruct
     public void construct(){
         LOGGER.info("accessControlImagePath is: {}",accessControlImagePath);
@@ -54,6 +63,7 @@ public class ImageController {
             source = Paths.get(toFullPath.get());
         }
 
+        LOGGER.debug("原始图片地址：{}",toFullPath);
         if (source == null || !Files.exists(source)) {
             try {
                 URL resource = ClassLoader.getSystemClassLoader().getResource(IMAGE_NOT_FOUND_USER_IMAGE_PNG);

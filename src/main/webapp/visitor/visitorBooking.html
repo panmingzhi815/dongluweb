@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>东陆一卡通访客系统</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="shortcut icon" href="../favicon.ico" />
+    <link rel="shortcut icon" href="../favicon.ico"/>
     <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/dist/css/AdminLTE.min.css">
     <link rel="stylesheet" href="../plugins/AdminLTE-2.3.7/dist/css/skins/_all-skins.min.css">
@@ -34,8 +34,10 @@
 
     <!-- Include Date Range Picker -->
     <script type="text/javascript" src="../plugins/AdminLTE-2.3.7/plugins/datepicker/bootstrap-datepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="../plugins/AdminLTE-2.3.7/plugins/datepicker/datepicker3.css" />
-    <script type="text/javascript" src="../plugins/AdminLTE-2.3.7/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js" charset="UTF-8"></script>
+    <link rel="stylesheet" type="text/css" href="../plugins/AdminLTE-2.3.7/plugins/datepicker/datepicker3.css"/>
+    <script type="text/javascript"
+            src="../plugins/AdminLTE-2.3.7/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"
+            charset="UTF-8"></script>
     <!-- Include Date Range Picker -->
 
     <script src="../js/datatableCommon.js"></script>
@@ -44,8 +46,8 @@
         var table;
         $(function () {
             $("#visitorTime").datepicker({
-                autoclose:true,
-                format:"yyyy-mm-dd"
+                autoclose: true,
+                format: "yyyy-mm-dd"
             });
 
             table = $("#example1").DataTable({
@@ -70,41 +72,35 @@
                 ]
             });
 
-            $('#example1 tbody').on( 'click', 'tr', function () {
-                if ($(this).hasClass('info')) {
-                    $(this).removeClass('info');
-                }
-                else {
-                    $("#example1 tr").removeClass("info");
-                    $(this).addClass('info');
-                }
-            } );
         })
 
-        function changeAction(modalTitle,type) {
+        function changeAction(modalTitle, type) {
             $("#modalTitle").html(modalTitle);
-            $("#visitorBookForm").attr("type",type);
+            $("#visitorBookForm").attr("type", type);
+            $("#id").val("");
             $("#visitorBookForm")[0].reset();
 
-            if(type == 'post'){
-                $("#visitorBookForm").attr("action","../visitorController/visitor");
+            $("#visitorBookForm").attr("action", "../visitorController/visitor");
+
+            if (type == 'post') {
                 return;
             }
 
-            var selected =  table.row('.info').data();
-            if(selected) {
-                deserialize("visitorBookForm",selected);
+            var selected = table.row('.info').data();
+            if (selected) {
+                deserialize("visitorBookForm", selected);
             }
 
-            if (type == 'delete'){
-                $("#visitorBookForm").attr("action","../visitorController/visitor/" + $("#id").val());
+            if (type == 'delete') {
+                $("#visitorBookForm").attr("action", "../visitorController/visitor/" + $("#id").val());
             }
         }
 
         function saveVisitorBooking() {
-            var data = $("#visitorBookForm").serializeArray();
-            var action = $("#visitorBookForm").attr("action");
-            var type = $("#visitorBookForm").attr("type");
+            var $visitorBookForm = $("#visitorBookForm");
+            var data = $visitorBookForm.serializeArray();
+            var action = $visitorBookForm.attr("action");
+            var type = $visitorBookForm.attr("type");
             $.ajax({
                 url: action,
                 type: type,
@@ -114,6 +110,28 @@
                         $.jGrowl(data.meta.message, {
                             life: 100, position: "center", beforeClose: function (e, m) {
                                 window.location.reload();
+                            }
+                        });
+                    } else {
+                        $.jGrowl(data.meta.message, {life: 5000, position: "center"});
+                    }
+                }
+            });
+        }
+
+        function midifyPassword() {
+            var modifyPasswordForm = $("#modifyPasswordForm");
+            var data = modifyPasswordForm.serializeArray();
+            var action = "../visitorController/login";
+            $.ajax({
+                url: action,
+                type: "put",
+                data: data,
+                success: function (data) {
+                    if (data.meta.success) {
+                        $.jGrowl(data.meta.message, {
+                            life: 100, position: "center", beforeClose: function (e, m) {
+                                window.location = "login.html";
                             }
                         });
                     } else {
@@ -133,16 +151,81 @@
                 <div class="navbar-header">
                     <a href="#" class="navbar-brand"><b>东陆一卡通</b></a>
                 </div>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="../image/user_128.png" class="user-image" alt="User Image ">
+                                <span class="hidden-xs" name="userLoginName">panmingzhi</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="../image/user_128.png" class="img-circle" alt="User Image">
+
+                                    <p>
+                                        <span class="hidden-xs" name="userLoginName">panmingzhi</span>
+                                    </p>
+                                </li>
+
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="text-center">
+                                        <a class="btn btn-primary btn-flat" data-toggle="modal" data-target="#myModal1">修改密码</a>
+                                        <a href="login.html" class="btn btn-danger btn-flat">用户注销</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>
+    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><span class="fa fa-credit-card"></span> <b>修改登录密码</b></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="modifyPasswordForm" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="loginName" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="loginName" name="loginName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword" class="col-sm-2 control-label">登录密码</label>
+                            <div class="col-sm-8">
+                                <input type="password" required class="form-control" id="loginPassword" name="loginPassword">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword" class="col-sm-2 control-label">新密码</label>
+                            <div class="col-sm-8">
+                                <input type="password" required class="form-control text-primary" id="newPassword" name="newPassword">
+                            </div>
+                        </div>
 
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-success" onclick="midifyPassword()"> 确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title" id="myModalLabel"><span class="fa fa-credit-card"></span> <b id ="modalTitle">添加访客预约</b> </h4>
+                    <h4 class="modal-title" id="myModalLabel"><span class="fa fa-credit-card"></span> <b
+                            id="modalTitle">添加访客预约</b></h4>
                 </div>
                 <div class="modal-body">
                     <form id="visitorBookForm" class="form-horizontal" role="form">
@@ -206,9 +289,15 @@
     <div class="content-wrapper">
         <div class="container">
             <section class="content-header">
-                <button type="button" class="btn btn-success icon-plus" data-toggle="modal" data-target="#myModal2" onclick="changeAction('添加预约','post')"> 添加预约</button>
-                <button type="button" class="btn btn-warning icon-edit" data-toggle="modal" data-target="#myModal2" onclick="changeAction('修改预约','put')"> 修改预约</button>
-                <button type="button" class="btn btn-danger icon-remove" data-toggle="modal" data-target="#myModal2" onclick="changeAction('删除预约','delete')"> 删除预约</button>
+                <button type="button" class="btn btn-success icon-plus" data-toggle="modal" data-target="#myModal2"
+                        onclick="changeAction('添加预约','post')"> 添加预约
+                </button>
+                <button type="button" class="btn btn-warning icon-edit" data-toggle="modal" data-target="#myModal2"
+                        onclick="changeAction('修改预约','put')"> 修改预约
+                </button>
+                <button type="button" class="btn btn-danger icon-remove" data-toggle="modal" data-target="#myModal2"
+                        onclick="changeAction('删除预约','delete')"> 删除预约
+                </button>
             </section>
             <section class="content">
                 <div class="box">

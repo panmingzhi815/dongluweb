@@ -45,6 +45,7 @@ public class LoginUserController {
         return new Response().success(login);
     }
 
+    @NoSecurity
     @RequestMapping(value = "/loginOut",method = RequestMethod.GET)
     public Response loginOut(){
         securityInterceptor.loginOut();

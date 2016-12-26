@@ -12,10 +12,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 访客控制器
@@ -36,21 +33,42 @@ public class VisitorController {
     @NoSecurity
     public Response login(@RequestParam String accountName, @RequestParam String accountPassword){
         CardUser cardUser = loginUserMapper.findCardUser(accountName);
-        if (cardUser == null) {
-            return new Response().failureMsg("用户名或密码错误");
-        }
-        if (cardUser.getUserPassword() == null && accountPassword.length() != 6) {
-            return new Response().failureMsg("用户名或密码错误");
-        }
-        if (cardUser.getUserPassword() == null && !accountName.endsWith(accountPassword)) {
-            return new Response().failureMsg("用户名或密码错误");
-        }
-        if (cardUser.getUserPassword() != null && !cardUser.getUserPassword().equals(accountPassword)) {
-            return new Response().failureMsg("用户名或密码错误");
+        Optional<Response> response = checkLogin(cardUser, accountPassword);
+        if (response.isPresent()) {
+            return response.get();
         }
         cardUser.setUserPassword(null);
         securityInterceptor.loginSession(cardUser);
         return new Response().successMsg("登录成功");
+    }
+
+    @RequestMapping(value = "/login",method = RequestMethod.PUT)
+    @NoSecurity
+    public Response modifyPassword(@RequestParam String loginName, @RequestParam String loginPassword,@RequestParam String newPassword){
+        CardUser cardUser = loginUserMapper.findCardUser(loginName);
+        Optional<Response> response = checkLogin(cardUser, loginPassword);
+        if (response.isPresent()) {
+            return response.get();
+        }
+        loginUserMapper.updateCardUserPassword(loginName,newPassword);
+        securityInterceptor.loginOut();
+        return new Response().successMsg("修改成功，请重新登录");
+    }
+
+    public Optional<Response> checkLogin(CardUser cardUser, String loginPassword) {
+        if (cardUser == null) {
+            return Optional.of(new Response().failureMsg("用户名或密码错误"));
+        }
+        if (cardUser.getUserPassword() == null && loginPassword.length() != 6) {
+            return Optional.of(new Response().failureMsg("用户名或密码错误"));
+        }
+        if (cardUser.getUserPassword() == null && !loginPassword.endsWith(loginPassword)) {
+            return Optional.of(new Response().failureMsg("用户名或密码错误"));
+        }
+        if (cardUser.getUserPassword() != null && !cardUser.getUserPassword().equals(loginPassword)) {
+            return Optional.of(new Response().failureMsg("用户名或密码错误"));
+        }
+        return Optional.empty();
     }
 
     @RequestMapping(value = "/visitor",method = RequestMethod.GET)

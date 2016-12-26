@@ -62,7 +62,7 @@
               data: $("#form").serialize(),
               success: function (data) {
                   if (data.meta.success){
-                      $.jGrowl(data.meta.message, { life: 1000,position:"center",beforeClose: function(e,m) {
+                      $.jGrowl(data.meta.message, { life: 100,position:"center",beforeClose: function(e,m) {
                           window.location = "visitorBooking.html";
                       }});
                   }else {

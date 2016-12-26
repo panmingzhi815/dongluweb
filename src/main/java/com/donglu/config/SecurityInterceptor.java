@@ -41,10 +41,10 @@ public class SecurityInterceptor {
             LOGGER.debug("UserValidateInterceptor interceptor is disable");
             return point.proceed();
         }
-        LOGGER.debug("UserValidateInterceptor interceptor start");
 
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
+        LOGGER.debug("UserValidateInterceptor interceptor method:{}",method);
         if (method.isAnnotationPresent(NoSecurity.class)){
             return point.proceed();
         }
