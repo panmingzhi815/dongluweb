@@ -40,109 +40,11 @@
             charset="UTF-8"></script>
     <!-- Include Date Range Picker -->
 
-    <script src="../js/datatableCommon.js"></script>
+    <script src="../js/dataTableCommon.js"></script>
+    <script src="../js/visitor.js"></script>
 
-    <script>
-        var table;
-        $(function () {
-            $("#visitorTime").datepicker({
-                autoclose: true,
-                format: "yyyy-mm-dd"
-            });
-
-            table = $("#example1").DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "fnServerData": retrieveData,
-                "autoWidth": true,
-                "language": datatable_language_cn,
-                "serverSide": true,
-                sAjaxSource: "../visitorController/visitor",
-                columns: [
-                    {data: "id", searchable: false},
-                    {data: "visitorName"},
-                    {data: "companyName"},
-                    {data: "IDCard"},
-                    {data: "sex"},
-                    {data: "phone"},
-                    {data: "visitorTime", searchable: false},
-                    {data: "reason"}
-                ]
-            });
-
-        })
-
-        function changeAction(modalTitle, type) {
-            $("#modalTitle").html(modalTitle);
-            $("#visitorBookForm").attr("type", type);
-            $("#id").val("");
-            $("#visitorBookForm")[0].reset();
-
-            $("#visitorBookForm").attr("action", "../visitorController/visitor");
-
-            if (type == 'post') {
-                return;
-            }
-
-            var selected = table.row('.info').data();
-            if (selected) {
-                deserialize("visitorBookForm", selected);
-            }
-
-            if (type == 'delete') {
-                $("#visitorBookForm").attr("action", "../visitorController/visitor/" + $("#id").val());
-            }
-        }
-
-        function saveVisitorBooking() {
-            var $visitorBookForm = $("#visitorBookForm");
-            var data = $visitorBookForm.serializeArray();
-            var action = $visitorBookForm.attr("action");
-            var type = $visitorBookForm.attr("type");
-            $.ajax({
-                url: action,
-                type: type,
-                data: data,
-                success: function (data) {
-                    if (data.meta.success) {
-                        $.jGrowl(data.meta.message, {
-                            life: 100, position: "center", beforeClose: function (e, m) {
-                                window.location.reload();
-                            }
-                        });
-                    } else {
-                        $.jGrowl(data.meta.message, {life: 5000, position: "center"});
-                    }
-                }
-            });
-        }
-
-        function midifyPassword() {
-            var modifyPasswordForm = $("#modifyPasswordForm");
-            var data = modifyPasswordForm.serializeArray();
-            var action = "../visitorController/login";
-            $.ajax({
-                url: action,
-                type: "put",
-                data: data,
-                success: function (data) {
-                    if (data.meta.success) {
-                        $.jGrowl(data.meta.message, {
-                            life: 100, position: "center", beforeClose: function (e, m) {
-                                window.location = "login.html";
-                            }
-                        });
-                    } else {
-                        $.jGrowl(data.meta.message, {life: 5000, position: "center"});
-                    }
-                }
-            });
-        }
-    </script>
 </head>
-<body class="hold-transition skin-blue layout-top-nav">
+<body class="hold-transition skin-green layout-top-nav">
 <div class="wrapper">
 
     <header class="main-header">
@@ -156,7 +58,7 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="../image/user_128.png" class="user-image" alt="User Image ">
-                                <span class="hidden-xs" name="userLoginName">panmingzhi</span>
+                                <span class="hidden-xs" name="userLoginName"></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
@@ -164,7 +66,7 @@
                                     <img src="../image/user_128.png" class="img-circle" alt="User Image">
 
                                     <p>
-                                        <span class="hidden-xs" name="userLoginName">panmingzhi</span>
+                                        <span class="hidden-xs" name="userLoginName"></span>
                                     </p>
                                 </li>
 

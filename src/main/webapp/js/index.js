@@ -18,7 +18,7 @@ $(function(){
     })
 
     $.ajax({
-        url:"/admin/login",
+        url:"admin/login",
         type:"json",
         method:"GET",
         success:function (r) {

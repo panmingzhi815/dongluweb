@@ -44,6 +44,7 @@ $(function(){
             $(this).addClass('info');
         }
     });
+
 });
 
 //序列化json到form表单

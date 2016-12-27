@@ -42,6 +42,15 @@ public class VisitorController {
         return new Response().successMsg("登录成功");
     }
 
+    @RequestMapping(value = "/login",method = RequestMethod.GET)
+    public Response login(){
+        Object login = securityInterceptor.getLogin();
+        if (login == null) {
+            return new Response().failureMsg("请重新登录");
+        }
+        return new Response().success(login);
+    }
+
     @RequestMapping(value = "/login",method = RequestMethod.PUT)
     @NoSecurity
     public Response modifyPassword(@RequestParam String loginName, @RequestParam String loginPassword,@RequestParam String newPassword){
