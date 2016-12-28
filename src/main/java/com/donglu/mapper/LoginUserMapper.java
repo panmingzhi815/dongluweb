@@ -14,9 +14,9 @@ import java.util.Map;
 @Component
 public interface LoginUserMapper {
 
-    SystemAccount findOne(String accountName);
+    SystemAccount findOne(@Param(value = "accountName") String accountName);
 
-    CardUser findCardUser(String idCard);
+    CardUser findCardUser(@Param(value = "idCard") String idCard);
 
     Long updateCardUserPassword(@Param(value = "loginName") String loginName, @Param(value = "newPassword") String newPassword);
 }

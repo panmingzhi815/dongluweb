@@ -1,8 +1,34 @@
 var table;
 $(function () {
+
     $("#visitorTime").datepicker({
+        language: 'zh-CN',
         autoclose: true,
         format: "yyyy-mm-dd"
+    });
+
+    $("#visitorTime_search").daterangepicker({
+        startDate: moment().subtract('months', 1),
+        endDate: moment().add('months',3),
+        ranges : {
+            '今日': [moment().startOf('day'), moment()],
+            '明日': [moment().add('days', 1), moment().add('days', 1)],
+            '未来1周': [moment().add('days', 1), moment().add('days', 8)],
+            '过去1周': [moment().subtract('days', 8), moment().subtract('days', 1)],
+            '过去3月': [moment().subtract('months', 3).subtract('days', 1), moment().subtract('days', 1)]
+        },
+        separator : ' 至 ',
+        locale: {
+            format: 'YYYY-MM-DD', applyLabel: '确定',
+            cancelLabel: '取消',
+            fromLabel: '起始时间',
+            toLabel: '结束时间',
+            customRangeLabel: '自定义',
+            daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            firstDay: 1
+        }
     });
 
     table = $("#example1").DataTable({
@@ -16,14 +42,15 @@ $(function () {
         "serverSide": true,
         sAjaxSource: "../visitorController/visitor",
         columns: [
-            {data: "id", searchable: false},
+            {data: "id"},
             {data: "visitorName"},
             {data: "companyName"},
             {data: "IDCard"},
             {data: "sex"},
             {data: "phone"},
-            {data: "visitorTime", searchable: false},
-            {data: "reason"}
+            {data: "visitorTime"},
+            {data: "reason"},
+            {data: "status"}
         ]
     });
 
@@ -41,19 +68,23 @@ $(function () {
             }
         }
     })
+
+    $("#refresh").on("click",function () {
+        window.location.reload();
+    })
+
+    $("#search").on("click",function () {
+        table.ajax.reload();
+    })
 })
 
 function changeAction(modalTitle, type) {
     $("#modalTitle").html(modalTitle);
     $("#visitorBookForm").attr("type", type);
-    $("#id").val("");
+
     $("#visitorBookForm")[0].reset();
 
     $("#visitorBookForm").attr("action", "../visitorController/visitor");
-
-    if (type == 'post') {
-        return;
-    }
 
     var selected = table.row('.info').data();
     if (selected) {
@@ -62,6 +93,10 @@ function changeAction(modalTitle, type) {
 
     if (type == 'delete') {
         $("#visitorBookForm").attr("action", "../visitorController/visitor/" + $("#id").val());
+    }
+
+    if (type == 'post'){
+        $("#id").val("");
     }
 }
 

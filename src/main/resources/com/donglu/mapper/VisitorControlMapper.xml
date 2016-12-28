@@ -3,14 +3,14 @@
 
 <mapper namespace="com.donglu.mapper.VisitorControlMapper">
     <insert id="insert" parameterType="com.donglu.bean.VisitorBooking">
-        INSERT INTO VisitorBooking (visitorName, visitorTime, IDCard, address, companyName, operaName, phone, reason, sex, cardUserId, userGroup, userName)
+        INSERT INTO VisitorBooking (visitorName, visitorTime, IDCard, address, companyName, operaName, phone, reason, sex, cardUserId, userGroup, userName,status)
         VALUES
             (#{visitorName}, #{visitorTime}, #{IDCard}, #{address}, #{companyName}, #{operaName}, #{phone}, #{reason},
-                             #{sex}, #{cardUserId}, #{userGroup}, #{userName});
+                             #{sex}, #{cardUserId}, #{userGroup}, #{userName}, #{status});
     </insert>
     <update id="update" parameterType="com.donglu.bean.VisitorBooking">
         UPDATE VisitorBooking
-        SET visitorName = #{visitorName},
+        SET visitorName   = #{visitorName},
             visitorTime   = #{visitorTime},
             IDCard        = #{IDCard},
             address       = #{address},
@@ -21,7 +21,8 @@
             sex           = #{sex},
             cardUserId    = #{cardUserId},
             userGroup     = #{userGroup},
-            userName      = #{userName}
+            userName      = #{userName},
+            status        = #{status}
         WHERE id = #{id};
     </update>
     <delete id="deleteVisitorBooking">
@@ -35,16 +36,31 @@
         SELECT count(1) FROM VisitorBooking
         <include refid="whereVisitorBooking"/>
     </select>
+    <select id="findVisitorBooking" resultType="com.donglu.bean.VisitorBooking">
+        SELECT * FROM VisitorBooking WHERE id = #{id}
+    </select>
     <sql id="whereVisitorBooking">
         <where>
             <if test="id != null">
-                id != #{id}
+                id = #{id}
             </if>
-            <if test="userName != null">
+            <if test="userName != null and userName != ''">
                 AND userName = #{userName}
+            </if>
+            <if test="visitorName != null and visitorName != ''">
+                AND visitorName = #{visitorName}
             </if>
             <if test="IDCard != null">
                 AND IDCard = #{IDCard}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="visitorStartTime != null and visitorStartTime != ''">
+                AND visitorTime >= #{visitorStartTime}
+            </if>
+            <if test="visitorEndTime != null and visitorEndTime != ''">
+                AND visitorTime <![CDATA[<=]]> #{visitorEndTime}
             </if>
         </where>
     </sql>

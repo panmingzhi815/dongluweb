@@ -33,11 +33,13 @@
     <link rel="stylesheet" href="../plugins/jgrowl/jquery.jgrowl.min.css">
 
     <!-- Include Date Range Picker -->
+    <script type="text/javascript" src="../plugins/AdminLTE-2.3.7/plugins/daterangepicker/moment.js"></script>
+    <script type="text/javascript" src="../plugins/AdminLTE-2.3.7/plugins/daterangepicker/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="../plugins/AdminLTE-2.3.7/plugins/daterangepicker/daterangepicker.css" />
+
+    <link rel="stylesheet" type="text/css" href="../plugins/AdminLTE-2.3.7/plugins/datepicker/datepicker3.css" />
     <script type="text/javascript" src="../plugins/AdminLTE-2.3.7/plugins/datepicker/bootstrap-datepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="../plugins/AdminLTE-2.3.7/plugins/datepicker/datepicker3.css"/>
-    <script type="text/javascript"
-            src="../plugins/AdminLTE-2.3.7/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"
-            charset="UTF-8"></script>
+    <script type="text/javascript" src="../plugins/AdminLTE-2.3.7/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>
     <!-- Include Date Range Picker -->
 
     <script src="../js/dataTableCommon.js"></script>
@@ -174,9 +176,12 @@
                         <div class="form-group">
                             <label for="visitorTime" class="col-sm-2 control-label">来访时间</label>
                             <div class="col-sm-8">
-                                <span style="position: relative; z-index: 9999;">
+                                <div class="input-group" style="position: relative; z-index: 9999;">
+                                    <div class="input-group-addon">
+                                        <i class="icon-calendar"></i>
+                                    </div>
                                     <input type="text" class="form-control" id="visitorTime" name="visitorTime">
-                                </span>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -191,20 +196,50 @@
     <div class="content-wrapper">
         <div class="container">
             <section class="content-header">
-                <button type="button" class="btn btn-success icon-plus" data-toggle="modal" data-target="#myModal2"
-                        onclick="changeAction('添加预约','post')"> 添加预约
-                </button>
-                <button type="button" class="btn btn-warning icon-edit" data-toggle="modal" data-target="#myModal2"
-                        onclick="changeAction('修改预约','put')"> 修改预约
-                </button>
-                <button type="button" class="btn btn-danger icon-remove" data-toggle="modal" data-target="#myModal2"
-                        onclick="changeAction('删除预约','delete')"> 删除预约
-                </button>
+                <form id="searchForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" for="visitorName_search">访客姓名</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="visitorName_search" name="visitorName" type="text"/>
+                        </div>
+                        <label class="col-sm-1 control-label" for="state_search">访客状态</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="state_search" name="status">
+                                <option value="">全部</option>
+                                <option value="未完成">未完成</option>
+                                <option value="已完成">已完成</option>
+                            </select>
+                        </div>
+                        <label class="col-sm-1 control-label" for="visitorTime_search">预约时间</label>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="icon-calendar"></i>
+                                </div>
+                                <input id="visitorTime_search" name="visitorTime" type="text" class="form-control pull-right" data-date-format="yyyy-mm-dd hh:ii" />
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-success icon-search" id = "search"> 查询 </button>
+                            <button type="button" class="btn btn-success icon-refresh" id = "refresh"> 刷新 </button>
+                        </div>
+                    </div>
+                </form>
             </section>
-            <section class="content">
-                <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title">访客预约列表</h3>
+            <section class="content-wrapper">
+                <div class="box box-success">
+                    <div class="box-header"></div>
+
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-success icon-plus" data-toggle="modal" data-target="#myModal2"
+                                onclick="changeAction('添加预约','post')"> 添加预约
+                        </button>
+                        <button type="button" class="btn btn-warning icon-edit" data-toggle="modal" data-target="#myModal2"
+                                onclick="changeAction('修改预约','put')"> 修改预约
+                        </button>
+                        <button type="button" class="btn btn-danger icon-remove" data-toggle="modal" data-target="#myModal2"
+                                onclick="changeAction('删除预约','delete')"> 删除预约
+                        </button>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
@@ -219,6 +254,7 @@
                                 <th>联系电话</th>
                                 <th>预约时间</th>
                                 <th>来访原因</th>
+                                <th>来访状态</th>
                             </tr>
                             </thead>
                         </table>

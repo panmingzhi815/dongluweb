@@ -1,11 +1,17 @@
 package com.donglu.bean;
 
+import com.donglu.config.CustomLocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * 访客预约
@@ -26,8 +32,14 @@ public class VisitorBooking implements Serializable {
     private String userGroup;
     private String userName;
     private String visitorName;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date visitorTime;
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @JsonFormat()
+    @DateTimeFormat(pattern = "yyyy-MM-dd",iso = DateTimeFormat.ISO.DATE)
+    private LocalDate visitorTime;
+    private String status;
+
+    private Date start;
+    private Date end;
 
     public void copyFromCardUser(CardUser cardUser) {
         this.setUserName(cardUser.getUserName());

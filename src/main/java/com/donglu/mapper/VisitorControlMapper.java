@@ -2,6 +2,7 @@ package com.donglu.mapper;
 
 import com.donglu.bean.VisitorBooking;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,5 +23,7 @@ public interface VisitorControlMapper {
 
     void update(VisitorBooking visitorBooking);
 
-    Long deleteVisitorBooking(Long id);
+    Long deleteVisitorBooking(@Param(value = "id") Long id);
+
+    VisitorBooking findVisitorBooking(@Param(value = "id") Long id);
 }
