@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 系统登录
  * Created by panmingzhi on 2016/11/27 0027.
  */
 @RestController

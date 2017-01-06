@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 
 /**
+ * 权限拦截
  * Created by panmingzhi on 2016/11/27 0027.
  */
 @Aspect

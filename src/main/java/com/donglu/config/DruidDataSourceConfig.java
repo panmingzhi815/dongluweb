@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Druid 数据源
  * Created by panmingzhi on 2016/11/27 0027.
  */
 @Data

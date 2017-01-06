@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * 使 response json 支持localDateTime 与 localDate的序列化
  * Created by panmingzhi on 2016/12/28 0028.
  */
 public class CustomLocalDateTimeSerializer extends JsonSerializer<Object> {
