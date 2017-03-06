@@ -1,6 +1,7 @@
 package com.donglu.bean;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * Created by panmingzhi on 2016/11/27 0027.
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ResponseTableList extends Response {
 
     private Long recordsTotal;

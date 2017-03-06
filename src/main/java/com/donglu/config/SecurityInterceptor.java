@@ -2,6 +2,9 @@ package com.donglu.config;
 
 import com.donglu.bean.NoSecurity;
 import com.donglu.bean.Response;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,6 +12,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -22,21 +26,18 @@ import java.lang.reflect.Method;
  * 权限拦截
  * Created by panmingzhi on 2016/11/27 0027.
  */
+@Data
 @Aspect
 @Component
 @Configuration
-@ConfigurationProperties(prefix="spring.donglu.interceptor", ignoreNestedProperties = false)
+@ConfigurationProperties(prefix="spring.donglu.interceptor")
 public class SecurityInterceptor {
 
     public static final String KEY = "loginUser";
-    public boolean enable = true;
+    private Boolean enable = true;
     private Logger LOGGER = LoggerFactory.getLogger(SecurityInterceptor.class);
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    @Around("execution(* com.donglu.controller..*(..)) and @annotation(org.springframework.web.bind.annotation.RequestMapping)")
+    @Around("@annotation(org.springframework.web.bind.annotation.RequestMapping)")
     public Object interceptor(ProceedingJoinPoint point) throws Throwable {
         if (!enable) {
             LOGGER.debug("UserValidateInterceptor interceptor is disable");

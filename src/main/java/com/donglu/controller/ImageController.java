@@ -5,6 +5,7 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,21 +35,17 @@ import java.util.StringJoiner;
 @Data
 public class ImageController {
 
+    private String accessControlImagePath = "";
     public static final String IMAGE_NOT_FOUND_USER_IMAGE_PNG = "image/not_found_user_image.png";
     private static Logger LOGGER = LoggerFactory.getLogger(ImageController.class);
-    private String accessControlImagePath = "";
 
     public void setAccessControlImagePath(String accessControlImagePath){
         try {
             this.accessControlImagePath = new String(accessControlImagePath.getBytes("iso-8859-1"),"utf-8");
+            LOGGER.info("初始化图片访问路径:{}",this.accessControlImagePath);
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("初始化图片访问路径失败",e);
         }
-    }
-
-    @PostConstruct
-    public void construct(){
-        LOGGER.info("accessControlImagePath is: {}",accessControlImagePath);
     }
 
     @NoSecurity
@@ -56,7 +53,7 @@ public class ImageController {
     public void getImage(@RequestParam String imageName, HttpServletResponse response) {
         response.setContentType("image/jpeg");
 
-        Optional<String> toFullPath = splitToFullPath(imageName, accessControlImagePath);
+        Optional<String> toFullPath = Optional.ofNullable(splitToFullPath(imageName, getAccessControlImagePath()));
         Path source = null;
 
         if (toFullPath.isPresent()) {
@@ -89,19 +86,18 @@ public class ImageController {
         }
     }
 
-    private Optional<String> splitToFullPath(String imageName, String accessControlImagePath) {
+    private String splitToFullPath(String imageName, String accessControlImagePath) {
         String[] split = imageName.split("_");
         String dateTime = split[0];
         if (dateTime.length() != 12) {
-            return Optional.empty();
+            return null;
         }
         String year = dateTime.substring(0,4);
         String month = dateTime.substring(4,6);
         String day = dateTime.substring(6,8);
         String hour = dateTime.substring(8,10);
         String min = dateTime.substring(10,12);
-        String fullPath = new StringJoiner("\\").add(accessControlImagePath).add(year).add(month).add(day).add(hour).add(min).add(imageName).toString();
-        return Optional.of(fullPath);
+        return new StringJoiner("\\").add(accessControlImagePath).add(year).add(month).add(day).add(hour).add(min).add(imageName).toString();
     }
 
 }
