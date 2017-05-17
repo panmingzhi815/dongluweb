@@ -1,5 +1,6 @@
 package com.donglu.mapper;
 
+import com.donglu.bean.Visitor;
 import com.donglu.bean.VisitorBooking;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,4 +27,6 @@ public interface VisitorControlMapper {
     Long deleteVisitorBooking(@Param(value = "id") Long id);
 
     VisitorBooking findVisitorBooking(@Param(value = "id") Long id);
+
+    Visitor findVisitor(@Param(value = "id") Long id);
 }

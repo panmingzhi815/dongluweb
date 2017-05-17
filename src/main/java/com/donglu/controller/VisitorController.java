@@ -6,10 +6,17 @@ import com.donglu.mapper.LoginUserMapper;
 import com.donglu.mapper.VisitorControlMapper;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Strings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +26,11 @@ import java.util.Optional;
  * 访客控制器
  * Created by panmingzhi on 2016/11/27 0027.
  */
+@Api(value = "访客系统")
 @RestController
 @RequestMapping("/visitorController")
 public class VisitorController {
-
+    private static Logger LOGGER = LoggerFactory.getLogger(VisitorController.class);
     @Autowired
     private LoginUserMapper loginUserMapper;
     @Autowired
@@ -120,6 +128,48 @@ public class VisitorController {
     @RequestMapping(value = "/visitor",method = RequestMethod.PUT)
     public Response updateVisitorBooking(VisitorBooking visitorBooking) {
         return insertOrUpdateVisitorBooking(visitorBooking);
+    }
+
+    @NoSecurity
+    @ApiOperation(value = "二维码验证",notes = "验证局域网访客二维码的可用性")
+    @RequestMapping(value = "/visitor/code2",method = RequestMethod.POST,produces="text/plain;charset=UTF-8")
+    public String validateCode2(@RequestParam String validData,@RequestParam String devSn){
+        return validateCode1(validData, devSn);
+    }
+    @NoSecurity
+    @ApiOperation(value = "二维码验证",notes = "验证互联网访客二维码的可用性")
+    @RequestMapping(value = "/visitor/code1",method = RequestMethod.POST,produces="text/plain;charset=UTF-8")
+    public String validateCode1(@RequestParam String qrcodeData,@RequestParam String devSn){
+        LOGGER.info("二维验证：{} 设备：{}",qrcodeData,devSn);
+        Long integer = Long.valueOf(qrcodeData);
+        Visitor visitor = visitorControlMapper.findVisitor(integer);
+        if (visitor == null) {
+            LOGGER.warn("未打到二维码对应的访客信息,不允许出入");
+            return "{'ret':0,'count':0}";
+        }
+        if (visitor.getOutTime() != null) {
+            LOGGER.warn("访客：{}己注销，不允许再次进行二维码验证");
+            return "{'ret':0,'count':0}";
+        }
+        if (visitor.getInTime() == null) {
+            LOGGER.warn("访客：{} 入场时间未设置，不允许再次进行二维码验证");
+            return "{'ret':0,'count':0}";
+        }
+        LocalDateTime inDateTime = LocalDateTime.ofInstant(visitor.getInTime().toInstant(), ZoneId.systemDefault());
+        LocalDateTime firstTime = LocalDateTime.of(inDateTime.getYear(), inDateTime.getMonth(), inDateTime.getDayOfMonth(), 0, 0, 0);
+        LocalDateTime lastTime = LocalDateTime.of(inDateTime.getYear(), inDateTime.getMonth(), inDateTime.getDayOfMonth(), 23, 59, 59);
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(firstTime)) {
+            LOGGER.warn("访客验证未通过，系统有效时间段{}至{}，验证时间：{}",firstTime,lastTime,now);
+            return "{'ret':0,'count':0}";
+        }
+        if (now.isAfter(lastTime)){
+            LOGGER.warn("访客验证未通过，系统有效时间段{}至{}，验证时间：{}",firstTime,lastTime,now);
+            return "{'ret':0,'count':0}";
+        }
+
+        LOGGER.warn("访客验证通过，系统有效时间段{}至{}，验证时间：{}",firstTime,lastTime,now);
+        return "{'ret':0,'count':1}";
     }
 
     @RequestMapping(value = "/visitor/{id}",method = RequestMethod.DELETE)

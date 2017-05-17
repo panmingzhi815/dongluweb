@@ -39,6 +39,10 @@
     <select id="findVisitorBooking" resultType="com.donglu.bean.VisitorBooking">
         SELECT * FROM VisitorBooking WHERE id = #{id}
     </select>
+    <select id="findVisitor" resultType="com.donglu.bean.Visitor">
+        select *
+        from dbo.Visitor WHERE id = #{id};
+    </select>
     <sql id="whereVisitorBooking">
         <where>
             <if test="id != null">
