@@ -134,42 +134,54 @@ public class VisitorController {
     @ApiOperation(value = "二维码验证",notes = "验证局域网访客二维码的可用性")
     @RequestMapping(value = "/visitor/code2",method = RequestMethod.POST,produces="text/plain;charset=UTF-8")
     public String validateCode2(@RequestParam String validData,@RequestParam String devSn){
-        return validateCode1(validData, devSn);
+        if (getValidResult(validData, devSn)) {
+            return "{'ret':'OK','count':1}";
+        }else {
+            return "{'ret':'NO'}";
+        }
     }
     @NoSecurity
     @ApiOperation(value = "二维码验证",notes = "验证互联网访客二维码的可用性")
     @RequestMapping(value = "/visitor/code1",method = RequestMethod.POST,produces="text/plain;charset=UTF-8")
     public String validateCode1(@RequestParam String qrcodeData,@RequestParam String devSn){
+        if (getValidResult(qrcodeData, devSn)) {
+            return "{'ret':0,'count':1}";
+        }else {
+            return "{'ret':0,'count':0}";
+        }
+    }
+
+    private boolean getValidResult(@RequestParam String qrcodeData, @RequestParam String devSn) {
         LOGGER.info("二维验证：{} 设备：{}",qrcodeData,devSn);
         Long integer = Long.valueOf(qrcodeData);
         Visitor visitor = visitorControlMapper.findVisitor(integer);
         if (visitor == null) {
             LOGGER.warn("未打到二维码对应的访客信息,不允许出入");
-            return "{'ret':0,'count':0}";
+            return false;
         }
         if (visitor.getOutTime() != null) {
-            LOGGER.warn("访客：{}己注销，不允许再次进行二维码验证");
-            return "{'ret':0,'count':0}";
+            LOGGER.warn("访客：{}己注销，不允许再次进行二维码验证",visitor.getName());
+            return false;
         }
         if (visitor.getInTime() == null) {
-            LOGGER.warn("访客：{} 入场时间未设置，不允许再次进行二维码验证");
-            return "{'ret':0,'count':0}";
+            LOGGER.warn("访客：{} 入场时间未设置，不允许再次进行二维码验证",visitor.getName());
+            return false;
         }
         LocalDateTime inDateTime = LocalDateTime.ofInstant(visitor.getInTime().toInstant(), ZoneId.systemDefault());
         LocalDateTime firstTime = LocalDateTime.of(inDateTime.getYear(), inDateTime.getMonth(), inDateTime.getDayOfMonth(), 0, 0, 0);
         LocalDateTime lastTime = LocalDateTime.of(inDateTime.getYear(), inDateTime.getMonth(), inDateTime.getDayOfMonth(), 23, 59, 59);
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(firstTime)) {
-            LOGGER.warn("访客验证未通过，系统有效时间段{}至{}，验证时间：{}",firstTime,lastTime,now);
-            return "{'ret':0,'count':0}";
+            LOGGER.warn("访客{}验证未通过，系统有效时间段{}至{}，验证时间：{}",visitor.getName(),firstTime,lastTime,now);
+            return false;
         }
         if (now.isAfter(lastTime)){
-            LOGGER.warn("访客验证未通过，系统有效时间段{}至{}，验证时间：{}",firstTime,lastTime,now);
-            return "{'ret':0,'count':0}";
+            LOGGER.warn("访客{}验证未通过，系统有效时间段{}至{}，验证时间：{}",visitor.getName(),firstTime,lastTime,now);
+            return false;
         }
 
-        LOGGER.warn("访客验证通过，系统有效时间段{}至{}，验证时间：{}",firstTime,lastTime,now);
-        return "{'ret':0,'count':1}";
+        LOGGER.warn("访客:{}验证通过，系统有效时间段{}至{}，验证时间：{}",visitor.getName(),firstTime,lastTime,now);
+        return true;
     }
 
     @RequestMapping(value = "/visitor/{id}",method = RequestMethod.DELETE)
